@@ -2,9 +2,9 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QDebug>
-#include <QSqlQuery>
-#include <QSqlTableModel>
+// #include <QDebug>
+// #include <QSqlQuery>
+// #include <QSqlTableModel>
 
 #include "database.h"
 QT_BEGIN_NAMESPACE
@@ -30,10 +30,9 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    QSqlDatabase database;
-    QSqlQuery *query;
+    Database *dat;
     QSqlTableModel *model;
 
-    int row;
+    int row=-1;
 };
 #endif // MAINWINDOW_H

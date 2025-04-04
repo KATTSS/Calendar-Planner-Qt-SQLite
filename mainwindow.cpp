@@ -6,24 +6,21 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    database = QSqlDatabase::addDatabase("QSQLITE");
-    database.setDatabaseName("./testDatabase.db");
-    if(database.open()) {
-        qDebug() << "open";
+    dat = new Database("./testDatabase.db");
+    if (!dat->open()) {
+        qCritical() << "Cannot proceed without database!";
+        return;
     }
+    dat->createTable("DatesTable", "Date TEXT, Task TEXT");
 
-    query = new QSqlQuery(database);
-    query->exec("CREATE TABLE DatesTable(Date DATE, Task TEXT);");
-
-    model = new QSqlTableModel(this, database);
-    model->setTable("DatesTable");
-    model->select();
+    model=dat->createTableModel("DatesTable", this);
     ui->Calendar->setModel(model);
+
 }
 
 MainWindow::~MainWindow()
 {
+    delete dat;
     delete ui;
 }
 
