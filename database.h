@@ -6,6 +6,7 @@
 
 #include <QDebug>
 
+
 class Database
 {
 public:
@@ -14,10 +15,11 @@ public:
 
     bool open();
     void close();
-
+    void cleanTable(const QString& dbName);
+    QSqlTableModel *selectCurrentMonthDates(QObject *parent);
     bool createTable(const QString &tableName, const QString &tableSchema);
     QSqlTableModel *createTableModel(const QString& tableName, QObject* parent = nullptr);
-
+    bool createCalendar();
 
 private :
     QSqlDatabase database;

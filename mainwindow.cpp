@@ -6,15 +6,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    dat = new Database("./testDatabase.db");
+    // dat = new Database("./testDatabase.db");
+     dat = new Database("./testCalendar.db");
     if (!dat->open()) {
         qCritical() << "Cannot proceed without database!";
         return;
     }
-    dat->createTable("DatesTable", "Date TEXT, Task TEXT");
+    dat->createCalendar();
+    // dat->createTable("DatesTable", "Date TEXT, Task TEXT");
 
-    model=dat->createTableModel("DatesTable", this);
-    ui->Calendar->setModel(model);
+    model=dat->selectCurrentMonthDates(this);
+     ui->Calendar->setModel(model);
 
 }
 
