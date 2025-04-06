@@ -54,10 +54,12 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../../database.cpp \
 		../../main.cpp \
-		../../mainwindow.cpp moc_mainwindow.cpp
+		../../mainwindow.cpp \
+		../../taskslist.cpp moc_mainwindow.cpp
 OBJECTS       = database.o \
 		main.o \
 		mainwindow.o \
+		taskslist.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -137,9 +139,11 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../../../../Planer.pro ../../database.h \
-		../../mainwindow.h ../../database.cpp \
+		../../mainwindow.h \
+		../../taskslist.h ../../database.cpp \
 		../../main.cpp \
-		../../mainwindow.cpp
+		../../mainwindow.cpp \
+		../../taskslist.cpp
 QMAKE_TARGET  = Planer
 DESTDIR       = 
 TARGET        = Planer
@@ -323,8 +327,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../database.h ../../mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../database.cpp ../../main.cpp ../../mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../database.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../database.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -362,6 +366,7 @@ compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
 moc_mainwindow.cpp: ../../mainwindow.h \
 		../../database.h \
+		../../taskslist.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/katya/курсач)/Planer/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang -I'/home/katya/курсач)/Planer' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
@@ -391,13 +396,18 @@ database.o: ../../database.cpp ../../database.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o database.o ../../database.cpp
 
 main.o: ../../main.cpp ../../mainwindow.h \
-		../../database.h
+		../../database.h \
+		../../taskslist.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
 
 mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../database.h \
+		../../taskslist.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
+
+taskslist.o: ../../taskslist.cpp ../../taskslist.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o taskslist.o ../../taskslist.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

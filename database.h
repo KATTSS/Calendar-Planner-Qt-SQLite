@@ -3,6 +3,7 @@
 #include <QSqlDatabase>
 #include <QSqlTableModel>
 #include <QSqlQuery>
+#include <QDate>
 
 #include <QDebug>
 
@@ -10,7 +11,7 @@
 class Database
 {
 public:
-    Database(const QString& dbPath);
+    Database(const QString& dbPath, const QString &connection);
     ~Database();
 
     bool open();
@@ -21,7 +22,13 @@ public:
     QSqlTableModel *createTableModel(const QString& tableName, QObject* parent = nullptr);
     bool createCalendar();
 
-private :
+    QVector<QDate> getDatesForMonth(int year, int month);
+
+    // bool addTask(const QDate& date, const QString& description);
+    // QVector<QString> getTasksForDate(const QDate& date);
+    // bool updateTaskStatus(int taskId, bool completed);
+
+//private :
     QSqlDatabase database;
 };
 

@@ -1,10 +1,8 @@
 #include "database.h"
 
-#include <QDate>
 
-
-Database::Database(const QString& dbPath) {
-    database = QSqlDatabase::addDatabase("QSQLITE");
+Database::Database(const QString& dbPath, const QString &connection) {
+    database = QSqlDatabase::addDatabase("QSQLITE", connection);
     database.setDatabaseName(dbPath);
 }
 Database::~Database()
@@ -15,7 +13,7 @@ Database::~Database()
 bool Database::open()
 {
     if (!database.open()) {
-        qWarning() << "Failed to open database" ;//<< database.lastError().text();
+        qWarning() << "Failed to open database" ;
         return false;
     }
     qInfo() << "Database opened successfully";
@@ -76,27 +74,15 @@ QSqlTableModel *Database::createTableModel(const QString &tableName, QObject *pa
 }
 
 bool Database::createCalendar() {
+
+    createTable("calendar", "d TEXT UNIQUE NOT NULL, dayofweek INT NOT NULL,"
+            "weekday TEXT NOT NULL,"
+            "year INT NOT NULL,"
+            "month INT NOT NULL,"
+                            "day INT NOT NULL");
+
+
     QSqlQuery query(database);
-
-    // 1. Создать таблицу
-    if (!query.exec(R"(
-        CREATE TABLE IF NOT EXISTS calendar (
-            d TEXT UNIQUE NOT NULL,
-            dayofweek INT NOT NULL,
-            weekday TEXT NOT NULL,
-            year INT NOT NULL,
-            month INT NOT NULL,
-            day INT NOT NULL
-        )
-    )")) {
-       // qWarning() << "Create table error:" << query.lastError().text();
-        return false;
-    }
-
-    // 2. Очистить старые данные (опционально)
-    this->cleanTable("calendar");
-
-    // 3. Заполнить данными
     QDate startDate(1980, 1, 1);
     QDate endDate(2039, 1, 1);
     query.exec("BEGIN TRANSACTION");
@@ -107,7 +93,7 @@ bool Database::createCalendar() {
             VALUES (?, ?, ?, ?, ?, ?)
         )");
         query.addBindValue(date.toString("yyyy-MM-dd"));
-        query.addBindValue((date.dayOfWeek() + 5) % 7);  // 0=ПН, 6=ВС
+        query.addBindValue((date.dayOfWeek() + 5) % 7);
         query.addBindValue(QLocale::system().dayName(date.dayOfWeek(), QLocale::LongFormat));
         query.addBindValue(date.year());
         query.addBindValue(date.month());
@@ -120,4 +106,26 @@ bool Database::createCalendar() {
     }
     query.exec("COMMIT");
     return true;
+}
+
+QVector<QDate> Database::getDatesForMonth(int year, int month) {
+    QVector<QDate> dates;
+    QSqlQuery query(database);
+    query.prepare(
+        "SELECT year, month, day FROM calendar "
+        "WHERE year = ? AND month = ? "
+        "ORDER BY day ASC"
+        );
+    query.addBindValue(year);
+    query.addBindValue(month);
+    if (query.exec()) {
+        while (query.next()) {
+            dates.append(QDate(
+                query.value(0).toInt(),
+                query.value(1).toInt(),
+                query.value(2).toInt()
+                ));
+        }
+    }
+    return dates;
 }
