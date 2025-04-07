@@ -7,6 +7,7 @@
 #include <QTableWidget>
 #include <QMenuBar>
 #include <QPushButton>
+#include <QLineEdit>
 
 #include <QDate>
 
@@ -16,6 +17,7 @@
 
 #include "database.h"
 #include "taskslist.h"
+#include "contmenu.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -36,6 +38,8 @@ private slots:
 
     void on_nextMonth_clicked();
 
+    QString getSelectedDateText();
+
 private:
     Ui::MainWindow *ui;
     QMenuBar *menu;
@@ -55,9 +59,14 @@ private:
     QDate currentMonth = QDate::currentDate();
     QPushButton *nextMonth;
     QPushButton *previousMonth;
-
+    QLineEdit *monthAndYear;
     TasksList *list;
 
+    ContMenu *contMenu;
     void updateCalendar();
+    QString getDateMonthYear(const QDate date);
+    void updateMonthAndYearLineEdit(const QString &monthandyear);
+
+
 };
 #endif // MAINWINDOW_H

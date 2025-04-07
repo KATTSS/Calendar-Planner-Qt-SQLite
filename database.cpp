@@ -75,7 +75,8 @@ QSqlTableModel *Database::createTableModel(const QString &tableName, QObject *pa
 
 bool Database::createCalendar() {
 
-    createTable("calendar", "d TEXT UNIQUE NOT NULL, dayofweek INT NOT NULL,"
+    createTable("calendar", "d TEXT UNIQUE NOT NULL,"
+                            "dayofweek INT NOT NULL,"
             "weekday TEXT NOT NULL,"
             "year INT NOT NULL,"
             "month INT NOT NULL,"
