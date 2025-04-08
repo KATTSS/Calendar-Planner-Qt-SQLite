@@ -21,6 +21,9 @@ void ContMenu::contextMenuEvent(QContextMenuEvent *event)
 void ContMenu::addNewTask()
 {
     qDebug() << "adding opened";
+    InputDioalog *newInput = new InputDioalog();
+    newInput->show();
+
 }
 
 void ContMenu::showContextMenu(int row, int column)

@@ -6,6 +6,8 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 
+#include "inputdioalog.h"
+
 class ContMenu : public QWidget
 {
 public:
