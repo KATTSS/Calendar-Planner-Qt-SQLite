@@ -5,6 +5,7 @@ Database::Database(const QString& dbPath, const QString &connection) {
     database = QSqlDatabase::addDatabase("QSQLITE", connection);
     database.setDatabaseName(dbPath);
 }
+
 Database::~Database()
 {
     close();

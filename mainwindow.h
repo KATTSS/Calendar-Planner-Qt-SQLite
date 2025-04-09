@@ -18,6 +18,7 @@
 #include "database.h"
 #include "taskslist.h"
 #include "contmenu.h"
+#include "datemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {

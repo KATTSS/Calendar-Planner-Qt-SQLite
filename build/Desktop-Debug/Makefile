@@ -54,16 +54,20 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../../contmenu.cpp \
 		../../database.cpp \
+		../../datemanager.cpp \
 		../../inputdioalog.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../taskslist.cpp moc_mainwindow.cpp
+		../../taskslist.cpp moc_datemanager.cpp \
+		moc_mainwindow.cpp
 OBJECTS       = contmenu.o \
 		database.o \
+		datemanager.o \
 		inputdioalog.o \
 		main.o \
 		mainwindow.o \
 		taskslist.o \
+		moc_datemanager.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -144,10 +148,12 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../../../../Planer.pro ../../contmenu.h \
 		../../database.h \
+		../../datemanager.h \
 		../../inputdioalog.h \
 		../../mainwindow.h \
 		../../taskslist.h ../../contmenu.cpp \
 		../../database.cpp \
+		../../datemanager.cpp \
 		../../inputdioalog.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
@@ -335,8 +341,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../contmenu.h ../../database.h ../../inputdioalog.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../contmenu.cpp ../../database.cpp ../../inputdioalog.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../contmenu.h ../../database.h ../../datemanager.h ../../inputdioalog.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../contmenu.cpp ../../database.cpp ../../datemanager.cpp ../../inputdioalog.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -369,14 +375,20 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	clang++ -pipe -g -std=gnu++1z -Wall -Wextra -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp
+compiler_moc_header_make_all: moc_datemanager.cpp moc_mainwindow.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp
+	-$(DEL_FILE) moc_datemanager.cpp moc_mainwindow.cpp
+moc_datemanager.cpp: ../../datemanager.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/katya/курсач)/Planer/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang -I'/home/katya/курсач)/Planer' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../datemanager.h -o moc_datemanager.cpp
+
 moc_mainwindow.cpp: ../../mainwindow.h \
 		../../database.h \
 		../../taskslist.h \
 		../../contmenu.h \
 		../../inputdioalog.h \
+		../../datemanager.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include '/home/katya/курсач)/Planer/build/Desktop-Debug/moc_predefs.h' -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang -I'/home/katya/курсач)/Planer' -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtSql -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/llvm-18/lib/clang/18/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
@@ -403,20 +415,28 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 ####### Compile
 
 contmenu.o: ../../contmenu.cpp ../../contmenu.h \
-		../../inputdioalog.h
+		../../inputdioalog.h \
+		../../database.h \
+		../../datemanager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o contmenu.o ../../contmenu.cpp
 
 database.o: ../../database.cpp ../../database.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o database.o ../../database.cpp
 
-inputdioalog.o: ../../inputdioalog.cpp ../../inputdioalog.h
+datemanager.o: ../../datemanager.cpp ../../datemanager.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o datemanager.o ../../datemanager.cpp
+
+inputdioalog.o: ../../inputdioalog.cpp ../../inputdioalog.h \
+		../../database.h \
+		../../datemanager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o inputdioalog.o ../../inputdioalog.cpp
 
 main.o: ../../main.cpp ../../mainwindow.h \
 		../../database.h \
 		../../taskslist.h \
 		../../contmenu.h \
-		../../inputdioalog.h
+		../../inputdioalog.h \
+		../../datemanager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
 
 mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
@@ -424,11 +444,15 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../taskslist.h \
 		../../contmenu.h \
 		../../inputdioalog.h \
+		../../datemanager.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
 
 taskslist.o: ../../taskslist.cpp ../../taskslist.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o taskslist.o ../../taskslist.cpp
+
+moc_datemanager.o: moc_datemanager.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_datemanager.o moc_datemanager.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

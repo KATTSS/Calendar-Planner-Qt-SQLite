@@ -6,6 +6,12 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QSpinBox>
+#include <QComboBox>
+
+#include "database.h"
+#include "datemanager.h"
 
 class InputDioalog : public QDialog
 {
@@ -19,6 +25,16 @@ private:
     QLabel *label;
     QPushButton *save;
     QVBoxLayout *layout;
+    QSpinBox *hours;
+    QSpinBox *minutes;
+    QComboBox *category;
+
+    Database *workWithData;
+
+
+    QString getTime();
+
+
 };
 
 #endif // INPUTDIOALOG_H

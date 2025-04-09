@@ -23,8 +23,8 @@ public:
     bool createCalendar();
 
     QVector<QDate> getDatesForMonth(int year, int month);
-
-    // bool addTask(const QDate& date, const QString& description);
+    //bool addTask(const QDate& date, const QString& description);
+    // bool addTask(const QString& description);
     // QVector<QString> getTasksForDate(const QDate& date);
     // bool updateTaskStatus(int taskId, bool completed);
 

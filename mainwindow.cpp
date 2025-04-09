@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
                       "date TEXT NOT NULL,  -- в формате YYYY-MM-DD"
                                 "time TEXT UNIQUE"
                                "description TEXT,"
+                                "category INT,"
                        "is_completed BOOLEAN DEFAULT 0,"
                        "FOREIGN KEY(date) REFERENCES calendar(d)"
                        );
@@ -62,6 +63,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(calendar, &QTableWidget::doubleClicked, this, &MainWindow::getSelectedDateText);
     connect(calendar, &QTableWidget::cellDoubleClicked, contMenu, &ContMenu::showContextMenu);
+
+    connect(calendar, &QTableWidget::cellDoubleClicked, this, [this](int row, int col) {
+        QTableWidgetItem* item = calendar->item(row, col);
+        if (item && !item->text().isEmpty()) {
+            int day = item->text().toInt();
+            QDate selectedDate(currentMonth.year(), currentMonth.month(), day);
+            DateManager::instance().setSelectedDate(selectedDate);
+            contMenu->showContextMenu(row, col);
+        }
+    });
+
     updateMonthAndYearLineEdit(getDateMonthYear(QDate::currentDate()));
 }
 
