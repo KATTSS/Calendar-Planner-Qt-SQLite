@@ -22,15 +22,18 @@ MainWindow::MainWindow(QWidget *parent)
     tasksDb = DatabaseManager::instance().tasksDatabase();
 
     calendar = new QTableWidget(6, 7, this);
+    calendar->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    calendar->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     updateCalendar();
 
     calendarLayout = new QVBoxLayout(this);
-    layout->addLayout(calendarLayout);
+    layout->addLayout(calendarLayout, 6);
 
     buttonLayout = new QHBoxLayout(this);
     calendarLayout->addLayout(buttonLayout);
 
     calendarLayout->addWidget(calendar);
+
 
     previousMonth = new QPushButton("<", this);
     monthAndYear = new QLineEdit(this);

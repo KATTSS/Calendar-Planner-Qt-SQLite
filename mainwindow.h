@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QDate>
+#include <QHeaderView>
 
 #include "taskslist.h"
 #include "contmenu.h"
