@@ -8,17 +8,12 @@
 #include <QMenuBar>
 #include <QPushButton>
 #include <QLineEdit>
-
 #include <QDate>
 
-// #include <QDebug>
-// #include <QSqlQuery>
-// #include <QSqlTableModel>
-
-#include "database.h"
 #include "taskslist.h"
 #include "contmenu.h"
 #include "datemanager.h"
+#include "databasemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -52,8 +47,8 @@ private:
     QAction *add;
     QAction *remove;
 
-    Database *dat;
-    Database *tasks;
+    Database* calendarDb;
+    Database* tasksDb;
     QSqlTableModel *model;
     QTableWidget *calendar;
 

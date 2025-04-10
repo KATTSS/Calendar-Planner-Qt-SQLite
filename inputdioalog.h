@@ -10,8 +10,8 @@
 #include <QSpinBox>
 #include <QComboBox>
 
-#include "database.h"
 #include "datemanager.h"
+#include "databasemanager.h"
 
 class InputDioalog : public QDialog
 {
@@ -29,12 +29,9 @@ private:
     QSpinBox *minutes;
     QComboBox *category;
 
-    Database *workWithData;
-
+    Database* tasksDb;
 
     QString getTime();
-
-
 };
 
 #endif // INPUTDIOALOG_H

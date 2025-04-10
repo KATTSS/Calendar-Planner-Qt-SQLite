@@ -11,6 +11,7 @@ CONFIG += c++17
 SOURCES += \
     contmenu.cpp \
     database.cpp \
+    databasemanager.cpp \
     datemanager.cpp \
     inputdioalog.cpp \
     main.cpp \
@@ -20,6 +21,7 @@ SOURCES += \
 HEADERS += \
     contmenu.h \
     database.h \
+    databasemanager.h \
     datemanager.h \
     inputdioalog.h \
     mainwindow.h \

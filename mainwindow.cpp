@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -17,21 +18,8 @@ MainWindow::MainWindow(QWidget *parent)
     add = menu->addAction("add");
     remove = menu->addAction("remove");
 
-    dat = new Database("./testCalendar.db", "dates");
-    tasks = new Database("./tasks.db", "taskss");
-    if (!dat->open() || !tasks->open()) {
-        qCritical() << "Cannot proceed without database!";
-        return;
-    }
-    dat->createCalendar();
-    tasks->createTable("tasks", "    id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                      "date TEXT NOT NULL,  -- в формате YYYY-MM-DD"
-                                "time TEXT UNIQUE"
-                               "description TEXT,"
-                                "category INT,"
-                       "is_completed BOOLEAN DEFAULT 0,"
-                       "FOREIGN KEY(date) REFERENCES calendar(d)"
-                       );
+    calendarDb = DatabaseManager::instance().calendarDatabase();
+    tasksDb = DatabaseManager::instance().tasksDatabase();
 
     calendar = new QTableWidget(6, 7, this);
     updateCalendar();
@@ -74,12 +62,13 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
+    connect(&DateManager::instance(), &DateManager::newTaskAdded, this, &MainWindow::updateCalendar);
+
     updateMonthAndYearLineEdit(getDateMonthYear(QDate::currentDate()));
 }
 
 MainWindow::~MainWindow()
 {
-    delete dat;
     delete ui;
 }
 
@@ -112,9 +101,7 @@ void MainWindow::updateCalendar()
     calendar->setHorizontalHeaderLabels({"Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"});
     QDate currentDate1 = QDate::currentDate();
     QDate currentDate = currentDate1.addMonths(currentMonth.month() - currentDate1.month());
-    QVector<QDate> dates = dat->getDatesForMonth(currentDate.year(), currentDate.month());
-
-    // updateMonthAndYearLineEdit(getDateMonthYear(currentDate));
+    QVector<QDate> dates = calendarDb->getDatesForMonth(currentDate.year(), currentDate.month());
 
     int firstDay = currentDate.addDays(-(currentDate.day() - 1)).dayOfWeek() % 7;
     if (firstDay == 0) firstDay = 7;
@@ -128,7 +115,7 @@ void MainWindow::updateCalendar()
 
         QTableWidgetItem *item = new QTableWidgetItem(QString::number(date.day()));
 
-        QSqlQuery taskQuery(tasks->database);
+        QSqlQuery taskQuery(tasksDb->database);
         taskQuery.prepare("SELECT description FROM tasks WHERE date = ?");
         taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
         if (taskQuery.exec() && taskQuery.next()) {

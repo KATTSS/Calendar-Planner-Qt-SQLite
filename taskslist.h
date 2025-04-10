@@ -6,9 +6,6 @@ class TasksList: public QListWidget
 {
 public:
     TasksList(QWidget *parent=nullptr);
-
-private:
-   // QListWidget *list;
 };
 
 #endif // TASKSLIST_H

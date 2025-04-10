@@ -15,6 +15,7 @@ public:
 
 signals:
     void dateChanged(const QDate& date);
+    void newTaskAdded();
 
 private:
     DateManager();

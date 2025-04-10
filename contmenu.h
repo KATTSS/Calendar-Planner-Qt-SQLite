@@ -14,11 +14,9 @@ public:
     ContMenu(QWidget *parent = nullptr);
     void showContextMenu(int row, int column);
 
-  //  protected:
         void contextMenuEvent(QContextMenuEvent *event) override;
     private slots:
         void addNewTask();
-        // void showContextMenu(int row, int column);
 
     private:
         QMenu *menu;

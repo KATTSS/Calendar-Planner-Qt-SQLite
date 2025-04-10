@@ -1,5 +1,5 @@
 #include "database.h"
-
+#include <QSqlError>
 
 Database::Database(const QString& dbPath, const QString &connection) {
     database = QSqlDatabase::addDatabase("QSQLITE", connection);
@@ -130,4 +130,22 @@ QVector<QDate> Database::getDatesForMonth(int year, int month) {
         }
     }
     return dates;
+}
+
+bool Database::addTask(const QDate &date, const QString &time, const QString &description)
+{
+    QSqlQuery query(database);
+    query.prepare(R"(
+        INSERT INTO tasks (date, time, description)
+        VALUES (?, ?, ?)
+    )");
+    query.addBindValue(date.toString("yyyy-MM-dd"));
+    query.addBindValue(time);
+    query.addBindValue(description);
+
+    if (!query.exec()) {
+        qWarning() << "Ошибка добавления задачи:" << query.lastError().text();
+        return false;
+    }
+    return true;
 }
