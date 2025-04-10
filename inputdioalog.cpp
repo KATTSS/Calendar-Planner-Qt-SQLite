@@ -51,7 +51,15 @@ void InputDioalog::on_saveButton_clicked()
 
 QString InputDioalog::getTime()
 {
-    return QString::number(hours->value()) + ":" + QString::number(minutes->value());
+    QString min = QString::number(minutes->value());
+    if(min.length()==1) {
+    min.at(0)=='0' ? min.append('0') : min.insert(0, '0');
+    }
+    QString hour = QString::number(hours->value());
+    if(hour.length()==1) {
+        hour.insert(0, '0');
+    }
+    return hour + ":" + min;
 }
 
 

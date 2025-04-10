@@ -149,3 +149,27 @@ bool Database::addTask(const QDate &date, const QString &time, const QString &de
     }
     return true;
 }
+
+QMap<QTime, QString> Database::getTasksAtDate(QDate &date)
+{
+    QMap<QTime, QString> toDo;
+    QSqlQuery taskQuery(this->database);
+    taskQuery.prepare("SELECT description, time FROM tasks WHERE date = ?");
+    taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
+    if (taskQuery.exec()) {
+        while (taskQuery.next()) {
+            QString description = taskQuery.value("description").toString();
+            QString timeStr = taskQuery.value("time").toString();
+
+            QTime time = QTime::fromString(timeStr, "HH:mm");
+
+            if (time.isValid()) {
+                toDo.insert(time, description);
+            } else {
+                qWarning() << "Invalid time format:" << timeStr;
+            }
+        }
+    }
+    qDebug() << "Найдено задач:" << toDo.size();
+    return toDo;
+}

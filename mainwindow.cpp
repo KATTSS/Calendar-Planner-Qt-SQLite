@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
             QDate selectedDate(currentMonth.year(), currentMonth.month(), day);
             DateManager::instance().setSelectedDate(selectedDate);
             contMenu->showContextMenu(row, col);
+             list->updateTasks(tasksDb->getTasksAtDate(selectedDate));
         }
     });
 
@@ -131,6 +132,7 @@ void MainWindow::updateCalendar()
 
    // updateMonthAndYearLineEdit(getDateMonthYear(currentDate));
 }
+
 
 QString MainWindow::getDateMonthYear(const QDate date)
 {
