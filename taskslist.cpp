@@ -6,42 +6,52 @@ void TasksList::updateTasks(QMap<QTime, QString> toDo)
 {
     clear();
     QMapIterator<QTime, QString> it(toDo);
+
     while (it.hasNext()) {
         it.next();
 
+        QString taskText = it.value();
+        if (taskText.length() >= 2) {
+            taskText.chop(2);
+        }
+
         QString itemText = QString("%1 : %2")
                                .arg(it.key().toString("HH:mm"))
-                               .arg(it.value());
+                               .arg(taskText);
 
         QListWidgetItem* item = new QListWidgetItem(itemText, this);
+        item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
+
+        if (it.value().endsWith("0")) {
+            item->setCheckState(Qt::Unchecked);
+        } else {
+            item->setCheckState(Qt::Checked);
+        }
+
+        item->setIcon(QIcon(getItemByCategory(it.value())));
 
         item->setData(Qt::UserRole, it.key());
-        item->setData(Qt::UserRole + 1, it.value());
+        item->setData(Qt::UserRole + 1, taskText);
 
         addItem(item);
     }
 }
 
-// QMap<QTime, QString> TasksList::updateList(QDate &date)
-// {
-//     Database* tasksDb = DatabaseManager::instance().tasksDatabase();
-//     QMap<QTime, QString> toDo;
-//     QSqlQuery taskQuery(tasksDb->database);
-//     taskQuery.prepare("SELECT description, time FROM tasks WHERE date = ?");
-//     taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
-//     if (taskQuery.exec()) {
-//         while (taskQuery.next()) {
-//             QString description = taskQuery.value("description").toString();
-//             QString timeStr = taskQuery.value("time").toString();
-
-//             QTime time = QTime::fromString(timeStr, "HH:mm");
-
-//             if (time.isValid()) {
-//                 toDo.insert(time, description);
-//             } else {
-//                 qWarning() << "Invalid time format:" << timeStr;
-//             }
-//         }
-//     }
-//     return toDo;
-// }
+QString TasksList::getItemByCategory(const QString &str)
+{
+    int x = QString(str[str.size()-2]).toInt();
+    switch (x) {
+    case 1:
+        return "/home/katya/курсач)/images.png";
+    case 2:
+        return "/home/katya/курсач)/images (1).png";
+    case 3:
+        return "/home/katya/курсач)/images (2).png";
+    case 4:
+        return "/home/katya/курсач)/lamp.png";
+    case 5:
+        return "/home/katya/курсач)/hospital.png";
+    default:
+        return "/home/katya/курсач)/question.png";
+    }
+}

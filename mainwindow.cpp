@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     tasksDb = DatabaseManager::instance().tasksDatabase();
 
     calendar = new QTableWidget(6, 7, this);
+    calendar->setEditTriggers(QAbstractItemView::NoEditTriggers);
     calendar->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     calendar->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     updateCalendar();
@@ -47,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     list = new TasksList(this);
     layout->addWidget(list);
 
+
     contMenu = new ContMenu(this);
 
     connect(previousMonth, &QPushButton::clicked, this, &MainWindow::on_previousMonth_clicked);
@@ -61,8 +63,9 @@ MainWindow::MainWindow(QWidget *parent)
             int day = item->text().toInt();
             QDate selectedDate(currentMonth.year(), currentMonth.month(), day);
             DateManager::instance().setSelectedDate(selectedDate);
+            //if (event->button() == Qt::RightButton)
             contMenu->showContextMenu(row, col);
-             list->updateTasks(tasksDb->getTasksAtDate(selectedDate));
+            list->updateTasks(tasksDb->getTasksAtDate(selectedDate));
         }
     });
 

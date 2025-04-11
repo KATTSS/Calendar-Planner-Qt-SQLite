@@ -24,6 +24,7 @@ public:
 
     QVector<QDate> getDatesForMonth(int year, int month);
     bool addTask(const QDate& date, const QString& time, const QString& description);
+    bool addTask(const QDate &date, const QString &time, const QString &description, int category);
     QMap<QTime, QString> getTasksAtDate(QDate &date);
     // bool addTask(const QString& description);
     // QVector<QString> getTasksForDate(const QDate& date);

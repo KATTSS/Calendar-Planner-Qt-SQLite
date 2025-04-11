@@ -150,15 +150,36 @@ bool Database::addTask(const QDate &date, const QString &time, const QString &de
     return true;
 }
 
+bool Database::addTask(const QDate &date, const QString &time, const QString &description, int category)
+{
+    QSqlQuery query(database);
+    query.prepare(R"(
+        INSERT INTO tasks (date, time, description, category)
+        VALUES (?, ?, ?, ?)
+    )");
+    query.addBindValue(date.toString("yyyy-MM-dd"));
+    query.addBindValue(time);
+    query.addBindValue(description);
+    query.addBindValue(category);
+
+    if (!query.exec()) {
+        qWarning() << "Ошибка добавления задачи:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
 QMap<QTime, QString> Database::getTasksAtDate(QDate &date)
 {
     QMap<QTime, QString> toDo;
     QSqlQuery taskQuery(this->database);
-    taskQuery.prepare("SELECT description, time FROM tasks WHERE date = ?");
+    taskQuery.prepare("SELECT description, time, category, is_completed FROM tasks WHERE date = ?");
     taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
     if (taskQuery.exec()) {
         while (taskQuery.next()) {
-            QString description = taskQuery.value("description").toString();
+            QString description = taskQuery.value("description").toString()+taskQuery.value("category").toString()
+                                  +taskQuery.value("is_completed").toString();
+            qDebug() << "decsription: " << description;
             QString timeStr = taskQuery.value("time").toString();
 
             QTime time = QTime::fromString(timeStr, "HH:mm");
@@ -173,3 +194,5 @@ QMap<QTime, QString> Database::getTasksAtDate(QDate &date)
     qDebug() << "Найдено задач:" << toDo.size();
     return toDo;
 }
+
+

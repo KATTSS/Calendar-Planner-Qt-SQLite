@@ -26,6 +26,15 @@ InputDioalog::InputDioalog(QWidget *parent) : QDialog(parent) {
     timeLayout->addWidget(hours);
     timeLayout->addWidget(minutes);
 
+    category=new QComboBox(this);
+    layout->addWidget(category);
+
+    category->addItem("Entertainment", 1);
+    category->addItem("Meeting", 2);
+    category->addItem("Sport", 3);
+    category->addItem("Work", 4);
+    category->addItem("HealthCare", 5);
+    category->addItem("Other", 6);
     layout->addWidget(taskInputLine);
     layout->addWidget(save);
 
@@ -39,11 +48,12 @@ void InputDioalog::on_saveButton_clicked()
     qDebug() << "in save button";
     QString time = this->getTime();
     QString task = taskInputLine->text();
+    int cat = this->getCategoiesComboBox();
     QDate date = DateManager::instance().getSelectedDate();
     qDebug() << date;
     if(tasksDb->open()) {
         qDebug() << "database opened)";
-        tasksDb->addTask(date, time, task);
+        tasksDb->addTask(date, time, task, cat);
         emit DateManager::instance().newTaskAdded();
     }
     this->close();
@@ -61,5 +71,17 @@ QString InputDioalog::getTime()
     }
     return hour + ":" + min;
 }
+
+int InputDioalog::getCategoiesComboBox()
+{
+    QVariant data = category->currentData();
+    if (data.isValid() && data.canConvert<int>()) {
+        int id = data.toInt();
+        return id;
+    }
+    return 0;
+}
+
+
 
 

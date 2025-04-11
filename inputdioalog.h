@@ -32,6 +32,7 @@ private:
     Database* tasksDb;
 
     QString getTime();
+    int getCategoiesComboBox();
 };
 
 #endif // INPUTDIOALOG_H
