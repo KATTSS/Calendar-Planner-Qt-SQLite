@@ -10,6 +10,9 @@
 #include <QLineEdit>
 #include <QDate>
 #include <QHeaderView>
+#include <QMutex>
+#include <QScrollBar>
+#include <QTimer>
 
 #include "taskslist.h"
 #include "contmenu.h"
@@ -60,7 +63,16 @@ private:
     TasksList *list;
 
     ContMenu *contMenu;
+
+   // QDate m_lastSelectedDate;
+    QMutex m_updateMutex;
+    bool m_isUpdating = false;
+
+    void updateAll();
     void updateCalendar();
+    void updateTasksList(QDate date);
+    QDate getSelectedDate();
+    void selectDateInCalendar(const QDate &date);
     QString getDateMonthYear(const QDate date);
     void updateMonthAndYearLineEdit(const QString &monthandyear);
 

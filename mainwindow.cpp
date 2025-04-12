@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     list = new TasksList(this);
     layout->addWidget(list);
-
+    list->setStyleSheet("font-size : 16px;");
 
     contMenu = new ContMenu(this);
 
@@ -55,7 +55,16 @@ MainWindow::MainWindow(QWidget *parent)
     connect(nextMonth, &QPushButton::clicked, this, &MainWindow::on_nextMonth_clicked);
 
     connect(calendar, &QTableWidget::doubleClicked, this, &MainWindow::getSelectedDateText);
-    connect(calendar, &QTableWidget::cellDoubleClicked, contMenu, &ContMenu::showContextMenu);
+
+    connect(calendar, &QTableWidget::cellClicked, this, [this](int row, int col) {
+        QTableWidgetItem* item = calendar->item(row, col);
+        if (item && !item->text().isEmpty()) {
+            int day = item->text().toInt();
+            QDate selectedDate(currentMonth.year(), currentMonth.month(), day);
+            updateTasksList(selectedDate);
+        }
+    });
+
 
     connect(calendar, &QTableWidget::cellDoubleClicked, this, [this](int row, int col) {
         QTableWidgetItem* item = calendar->item(row, col);
@@ -63,13 +72,13 @@ MainWindow::MainWindow(QWidget *parent)
             int day = item->text().toInt();
             QDate selectedDate(currentMonth.year(), currentMonth.month(), day);
             DateManager::instance().setSelectedDate(selectedDate);
-            //if (event->button() == Qt::RightButton)
             contMenu->showContextMenu(row, col);
-            list->updateTasks(tasksDb->getTasksAtDate(selectedDate));
         }
     });
 
-    connect(&DateManager::instance(), &DateManager::newTaskAdded, this, &MainWindow::updateCalendar);
+    connect(&DateManager::instance(), &DateManager::newTaskAdded, this, [this]() {
+        QTimer::singleShot(0, this, &MainWindow::updateAll);
+    }, Qt::QueuedConnection);
 
     updateMonthAndYearLineEdit(getDateMonthYear(QDate::currentDate()));
 }
@@ -95,13 +104,43 @@ void MainWindow::on_nextMonth_clicked()
 
 QString MainWindow::getSelectedDateText()
 {
+    if(!calendar->selectedItems()[0]->text().isEmpty()) {
     qDebug() << calendar->selectedItems()[0]->text();
     return calendar->selectedItems()[0]->text();
+    }
+    else
+        qDebug() << "no items in this calendar slot";
+    return QString::number(QDate::currentDate().day());
 }
 
+void MainWindow::updateAll()
+{
+    if (m_isUpdating) return;
+    m_isUpdating = true;
+    if (m_updateMutex.tryLock()) {
+        QDate currentDate = getSelectedDate();
+
+        updateCalendar();
+
+        if (currentDate.isValid()) {
+            updateTasksList(currentDate);
+        }
+
+        m_updateMutex.unlock();
+    }
+    m_isUpdating=false;
+}
 
 void MainWindow::updateCalendar()
 {
+
+    if (!m_updateMutex.tryLock()) return;
+
+    QScrollBar *vScroll = calendar->verticalScrollBar();
+    QScrollBar *hScroll = calendar->horizontalScrollBar();
+    int vValue = vScroll->value();
+    int hValue = hScroll->value();
+
     calendar->clear();
     calendar->setRowCount(6);
     calendar->setColumnCount(7);
@@ -132,10 +171,42 @@ void MainWindow::updateCalendar()
         calendar->setItem(row, col, item);
         col++;
     }
+    vScroll->setValue(vValue);
+    hScroll->setValue(hValue);
 
-   // updateMonthAndYearLineEdit(getDateMonthYear(currentDate));
+    m_updateMutex.unlock();
 }
 
+void MainWindow::updateTasksList(QDate date)
+{
+    qDebug() << "Updating tasks for:" << date;
+    QMap<QTime, QString> tasks = tasksDb->getTasksAtDate(date);
+    list->updateTasks(tasks);
+}
+
+QDate MainWindow::getSelectedDate()
+{
+    auto items = calendar->selectedItems();
+    if (items.isEmpty()) return QDate();
+
+    bool ok;
+    int day = items.first()->text().toInt(&ok);
+    return ok ? QDate(currentMonth.year(), currentMonth.month(), day) : QDate();
+}
+
+void MainWindow::selectDateInCalendar(const QDate &date)
+{
+    for (int row = 0; row < calendar->rowCount(); ++row) {
+        for (int col = 0; col < calendar->columnCount(); ++col) {
+            if (auto item = calendar->item(row, col)) {
+                if (item->text().toInt() == date.day()) {
+                    calendar->setCurrentCell(row, col);
+                    return;
+                }
+            }
+        }
+    }
+}
 
 QString MainWindow::getDateMonthYear(const QDate date)
 {

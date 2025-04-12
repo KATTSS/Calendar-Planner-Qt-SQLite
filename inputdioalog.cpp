@@ -57,6 +57,7 @@ void InputDioalog::on_saveButton_clicked()
         emit DateManager::instance().newTaskAdded();
     }
     this->close();
+    qDebug() << "saving was done";
 }
 
 QString InputDioalog::getTime()

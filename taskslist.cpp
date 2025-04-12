@@ -6,7 +6,7 @@ void TasksList::updateTasks(QMap<QTime, QString> toDo)
 {
     clear();
     QMapIterator<QTime, QString> it(toDo);
-
+    qDebug() << "size of toDo list: " << toDo.size();
     while (it.hasNext()) {
         it.next();
 
@@ -18,6 +18,8 @@ void TasksList::updateTasks(QMap<QTime, QString> toDo)
         QString itemText = QString("%1 : %2")
                                .arg(it.key().toString("HH:mm"))
                                .arg(taskText);
+
+        qDebug() << "itemText: " << itemText;
 
         QListWidgetItem* item = new QListWidgetItem(itemText, this);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
