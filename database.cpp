@@ -132,24 +132,6 @@ QVector<QDate> Database::getDatesForMonth(int year, int month) {
     return dates;
 }
 
-bool Database::addTask(const QDate &date, const QString &time, const QString &description)
-{
-    QSqlQuery query(database);
-    query.prepare(R"(
-        INSERT INTO tasks (date, time, description)
-        VALUES (?, ?, ?)
-    )");
-    query.addBindValue(date.toString("yyyy-MM-dd"));
-    query.addBindValue(time);
-    query.addBindValue(description);
-
-    if (!query.exec()) {
-        qWarning() << "Ошибка добавления задачи:" << query.lastError().text();
-        return false;
-    }
-    return true;
-}
-
 bool Database::addTask(const QDate &date, const QString &time, const QString &description, int category)
 {
     QSqlQuery query(database);
@@ -204,6 +186,15 @@ bool Database::updateTaskStatus(int taskId, bool completed)
     QSqlQuery query(database);
     query.prepare("UPDATE tasks SET is_completed = ? WHERE id = ?");
     query.addBindValue(completed ? 1 : 0);
+    query.addBindValue(taskId);
+    return query.exec();
+}
+
+bool Database::deleteTask(int taskId)
+{
+    qDebug() << "in deleting from db";
+    QSqlQuery query(database);
+    query.prepare("DELETE FROM tasks WHERE id = ?");
     query.addBindValue(taskId);
     return query.exec();
 }

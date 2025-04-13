@@ -1,10 +1,13 @@
 #include "taskslist.h"
 
-TasksList::TasksList(QWidget *parent) : QListWidget(parent){
-
+TasksList::TasksList(QWidget *parent) : QListWidget(parent)
+{
+    tasksDb = DatabaseManager::instance().tasksDatabase();
     connect(this, &QListWidget::itemChanged,
             this, &TasksList::handleItemChange);
-    tasksDb = DatabaseManager::instance().tasksDatabase();
+
+    //connect(this, &TasksList::deletionPressed, this, &TasksList::handleDeletion);
+
 }
 
 void TasksList::updateTasks(QMap<QTime, QString> toDo)
@@ -68,10 +71,34 @@ QString TasksList::getItemByCategory(int x)
     }
 }
 
+void TasksList::keyPressEvent(QKeyEvent *event)
+{
+    // if (event->key()==Qt::Key_Delete) {
+    //     emit deletionPressed();
+    // }
+    // QListWidget::keyPressEvent(event);
+    if (event->key() == Qt::Key_Delete && m_deleteHandler) {
+        if (auto item = currentItem()) {
+            m_deleteHandler(item->data(Qt::UserRole).toInt());
+            delete item;
+        }
+    }
+    QListWidget::keyPressEvent(event);
+}
+
 void TasksList::handleItemChange(QListWidgetItem *item)
 {
     int taskId = item->data(Qt::UserRole).toInt();
     bool completed = (item->checkState() == Qt::Checked);
     qDebug () << "in changing status" << taskId << " " << completed;
     tasksDb->updateTaskStatus(taskId, completed);
+}
+
+void TasksList::handleDeletion(QListWidgetItem *item)
+{
+
+    if (!item->isSelected()) return;
+    int taskId = item->data(Qt::UserRole).toInt();
+   // qDebug () << "in changing status" << taskId ;
+    tasksDb->deleteTask(taskId);
 }

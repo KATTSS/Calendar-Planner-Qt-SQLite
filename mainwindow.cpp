@@ -80,6 +80,11 @@ MainWindow::MainWindow(QWidget *parent)
         QTimer::singleShot(0, this, &MainWindow::updateAll);
     }, Qt::QueuedConnection);
 
+    list->setDeleteHandler([this](int taskId) {
+        tasksDb->deleteTask(taskId);
+        updateCalendar();
+    });
+
     //connect(list, &TasksList::QListWidget::currentItemChanged, this, )
 
     updateMonthAndYearLineEdit(getDateMonthYear(QDate::currentDate()));
