@@ -1,6 +1,11 @@
 #include "taskslist.h"
 
-TasksList::TasksList(QWidget *parent) : QListWidget(parent){}
+TasksList::TasksList(QWidget *parent) : QListWidget(parent){
+
+    connect(this, &QListWidget::itemChanged,
+            this, &TasksList::handleItemChange);
+    tasksDb = DatabaseManager::instance().tasksDatabase();
+}
 
 void TasksList::updateTasks(QMap<QTime, QString> toDo)
 {
@@ -10,10 +15,16 @@ void TasksList::updateTasks(QMap<QTime, QString> toDo)
     while (it.hasNext()) {
         it.next();
 
-        QString taskText = it.value();
-        if (taskText.length() >= 2) {
-            taskText.chop(2);
-        }
+        QString taskText;
+        int cat, isComp=0, taskId;
+
+        QStringList task=it.value().split("|");
+        if (task.size()>=4) {
+            taskText=task[0];
+            cat=task[1].toInt();
+            isComp=task[2].toInt();
+            taskId=task[3].toInt();
+        } else {continue;}
 
         QString itemText = QString("%1 : %2")
                                .arg(it.key().toString("HH:mm"))
@@ -22,26 +33,25 @@ void TasksList::updateTasks(QMap<QTime, QString> toDo)
         qDebug() << "itemText: " << itemText;
 
         QListWidgetItem* item = new QListWidgetItem(itemText, this);
+        item->setData(Qt::UserRole, taskId);
         item->setFlags(item->flags() | Qt::ItemIsUserCheckable);
 
-        if (it.value().endsWith("0")) {
+        if (isComp==0) {
             item->setCheckState(Qt::Unchecked);
         } else {
             item->setCheckState(Qt::Checked);
         }
 
-        item->setIcon(QIcon(getItemByCategory(it.value())));
+        item->setIcon(QIcon(getItemByCategory(cat)));
 
-        item->setData(Qt::UserRole, it.key());
         item->setData(Qt::UserRole + 1, taskText);
 
         addItem(item);
     }
 }
 
-QString TasksList::getItemByCategory(const QString &str)
+QString TasksList::getItemByCategory(int x)
 {
-    int x = QString(str[str.size()-2]).toInt();
     switch (x) {
     case 1:
         return "/home/katya/курсач)/images.png";
@@ -56,4 +66,12 @@ QString TasksList::getItemByCategory(const QString &str)
     default:
         return "/home/katya/курсач)/question.png";
     }
+}
+
+void TasksList::handleItemChange(QListWidgetItem *item)
+{
+    int taskId = item->data(Qt::UserRole).toInt();
+    bool completed = (item->checkState() == Qt::Checked);
+    qDebug () << "in changing status" << taskId << " " << completed;
+    tasksDb->updateTaskStatus(taskId, completed);
 }

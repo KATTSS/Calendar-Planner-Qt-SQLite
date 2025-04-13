@@ -176,12 +176,12 @@ QMap<QTime, QString> Database::getTasksAtDate(QDate &date)
     qDebug() << "before getting tasks";
     QMap<QTime, QString> toDo;
     QSqlQuery taskQuery(this->database);
-    taskQuery.prepare("SELECT description, time, category, is_completed FROM tasks WHERE date = ?");
+    taskQuery.prepare("SELECT description, time, category, is_completed, id FROM tasks WHERE date = ?");
     taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
     if (taskQuery.exec()) {
         while (taskQuery.next()) {
-            QString description = taskQuery.value("description").toString()+taskQuery.value("category").toString()
-                                  +taskQuery.value("is_completed").toString();
+            QString description = taskQuery.value("description").toString()+"|"+taskQuery.value("category").toString()
+                                  +"|"+taskQuery.value("is_completed").toString()+"|"+taskQuery.value("id").toString();
             qDebug() << "decsription: " << description;
             QString timeStr = taskQuery.value("time").toString();
 
@@ -196,6 +196,16 @@ QMap<QTime, QString> Database::getTasksAtDate(QDate &date)
     }
     qDebug() << "Найдено задач:" << toDo.size();
     return toDo;
+}
+
+bool Database::updateTaskStatus(int taskId, bool completed)
+{
+    qDebug() << "in updating changes";
+    QSqlQuery query(database);
+    query.prepare("UPDATE tasks SET is_completed = ? WHERE id = ?");
+    query.addBindValue(completed ? 1 : 0);
+    query.addBindValue(taskId);
+    return query.exec();
 }
 
 

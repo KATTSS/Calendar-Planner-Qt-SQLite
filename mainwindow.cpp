@@ -80,6 +80,8 @@ MainWindow::MainWindow(QWidget *parent)
         QTimer::singleShot(0, this, &MainWindow::updateAll);
     }, Qt::QueuedConnection);
 
+    //connect(list, &TasksList::QListWidget::currentItemChanged, this, )
+
     updateMonthAndYearLineEdit(getDateMonthYear(QDate::currentDate()));
 }
 
@@ -134,7 +136,7 @@ void MainWindow::updateAll()
 void MainWindow::updateCalendar()
 {
 
-    if (!m_updateMutex.tryLock()) return;
+   // if (!m_updateMutex.tryLock()) return;
 
     QScrollBar *vScroll = calendar->verticalScrollBar();
     QScrollBar *hScroll = calendar->horizontalScrollBar();

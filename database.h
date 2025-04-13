@@ -28,7 +28,7 @@ public:
     QMap<QTime, QString> getTasksAtDate(QDate &date);
     // bool addTask(const QString& description);
     // QVector<QString> getTasksForDate(const QDate& date);
-    // bool updateTaskStatus(int taskId, bool completed);
+    bool updateTaskStatus(int taskId, bool completed);
 
     QSqlDatabase database;
 };
