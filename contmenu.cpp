@@ -8,12 +8,15 @@ ContMenu::ContMenu(QWidget *parent) : QWidget(parent)
 
     addNew = new QAction("add new task", this);
     sortByCategory = new QAction("sort by event category", this);
+    deadlineSet = new QAction("set event before deadline", this);
 
     connect(addNew, &QAction::triggered, this, &ContMenu::addNewTask);
     connect(sortByCategory, &QAction::triggered, this, &ContMenu::sortByCat);
+    connect(deadlineSet, &QAction::triggered, this, &ContMenu::setByDeadline);
 
     menu->addAction(addNew);
     menu->addAction(sortByCategory);
+    menu->addAction(deadlineSet);
 }
 
 void ContMenu::contextMenuEvent(QContextMenuEvent *event)
@@ -34,6 +37,12 @@ void ContMenu::sortByCat()
     qDebug() << "in adding tasks";
     CategoriesDialog *newDialog = new CategoriesDialog();
     newDialog->show();
+}
+
+void ContMenu::setByDeadline()
+{
+    InputDialogDeadline *newDeadline = new InputDialogDeadline();
+    newDeadline->show();
 }
 
 void ContMenu::showContextMenu(int row, int column)

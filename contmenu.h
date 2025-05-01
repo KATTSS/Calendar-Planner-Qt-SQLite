@@ -6,8 +6,9 @@
 #include <QMenu>
 #include <QContextMenuEvent>
 
-#include "inputdialog.h"
-#include "categoriesdialog.h"
+// #include "inputdialog.h"
+// #include "categoriesdialog.h"
+#include "inputdialogdeadline.h"
 
 class ContMenu : public QWidget
 {
@@ -19,11 +20,13 @@ public:
     private slots:
         void addNewTask();
         void sortByCat();
+        void setByDeadline();
 
     private:
         QMenu *menu;
         QAction *addNew;
         QAction *sortByCategory;
+        QAction *deadlineSet;
 
 };
 

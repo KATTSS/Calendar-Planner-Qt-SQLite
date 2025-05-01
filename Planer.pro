@@ -15,6 +15,7 @@ SOURCES += \
     databasemanager.cpp \
     datemanager.cpp \
     inputdialog.cpp \
+    inputdialogdeadline.cpp \
     main.cpp \
     mainwindow.cpp \
     taskslist.cpp
@@ -26,6 +27,7 @@ HEADERS += \
     databasemanager.h \
     datemanager.h \
     inputdialog.h \
+    inputdialogdeadline.h \
     mainwindow.h \
     taskslist.h
 

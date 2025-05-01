@@ -58,6 +58,7 @@ SOURCES       = ../../categoriesdialog.cpp \
 		../../databasemanager.cpp \
 		../../datemanager.cpp \
 		../../inputdialog.cpp \
+		../../inputdialogdeadline.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
 		../../taskslist.cpp moc_datemanager.cpp \
@@ -68,6 +69,7 @@ OBJECTS       = categoriesdialog.o \
 		databasemanager.o \
 		datemanager.o \
 		inputdialog.o \
+		inputdialogdeadline.o \
 		main.o \
 		mainwindow.o \
 		taskslist.o \
@@ -156,6 +158,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../../databasemanager.h \
 		../../datemanager.h \
 		../../inputdialog.h \
+		../../inputdialogdeadline.h \
 		../../mainwindow.h \
 		../../taskslist.h ../../categoriesdialog.cpp \
 		../../contmenu.cpp \
@@ -163,6 +166,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../../databasemanager.cpp \
 		../../datemanager.cpp \
 		../../inputdialog.cpp \
+		../../inputdialogdeadline.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
 		../../taskslist.cpp
@@ -349,8 +353,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../categoriesdialog.h ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdialog.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../categoriesdialog.cpp ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdialog.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../categoriesdialog.h ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdialog.h ../../inputdialogdeadline.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../categoriesdialog.cpp ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdialog.cpp ../../inputdialogdeadline.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -396,6 +400,7 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		../../databasemanager.h \
 		../../database.h \
 		../../contmenu.h \
+		../../inputdialogdeadline.h \
 		../../inputdialog.h \
 		../../categoriesdialog.h \
 		../../datemanager.h \
@@ -429,6 +434,7 @@ categoriesdialog.o: ../../categoriesdialog.cpp ../../categoriesdialog.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o categoriesdialog.o ../../categoriesdialog.cpp
 
 contmenu.o: ../../contmenu.cpp ../../contmenu.h \
+		../../inputdialogdeadline.h \
 		../../inputdialog.h \
 		../../databasemanager.h \
 		../../database.h \
@@ -453,11 +459,20 @@ inputdialog.o: ../../inputdialog.cpp ../../inputdialog.h \
 		../../datemanager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o inputdialog.o ../../inputdialog.cpp
 
+inputdialogdeadline.o: ../../inputdialogdeadline.cpp ../../inputdialogdeadline.h \
+		../../inputdialog.h \
+		../../databasemanager.h \
+		../../database.h \
+		../../categoriesdialog.h \
+		../../datemanager.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o inputdialogdeadline.o ../../inputdialogdeadline.cpp
+
 main.o: ../../main.cpp ../../mainwindow.h \
 		../../taskslist.h \
 		../../databasemanager.h \
 		../../database.h \
 		../../contmenu.h \
+		../../inputdialogdeadline.h \
 		../../inputdialog.h \
 		../../categoriesdialog.h \
 		../../datemanager.h
@@ -468,6 +483,7 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../databasemanager.h \
 		../../database.h \
 		../../contmenu.h \
+		../../inputdialogdeadline.h \
 		../../inputdialog.h \
 		../../categoriesdialog.h \
 		../../datemanager.h \

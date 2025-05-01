@@ -14,7 +14,7 @@ public:
     InputDialog(QWidget *parent = nullptr);
     void on_okButton_clicked() override;
 
-private:
+protected:
     QLineEdit *taskInputLine;
     QLabel *label;
     QVBoxLayout *mainLayout;
