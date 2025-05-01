@@ -5,15 +5,12 @@ TasksList::TasksList(QWidget *parent) : QListWidget(parent)
     tasksDb = DatabaseManager::instance().tasksDatabase();
     connect(this, &QListWidget::itemChanged,
             this, &TasksList::handleItemChange);
-
-    //connect(this, &TasksList::deletionPressed, this, &TasksList::handleDeletion);
-
 }
 
-void TasksList::updateTasks(QMap<QTime, QString> toDo)
+void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
 {
     clear();
-    QMapIterator<QTime, QString> it(toDo);
+    QMapIterator<QDateTime, QString> it(toDo);
     qDebug() << "size of toDo list: " << toDo.size();
     while (it.hasNext()) {
         it.next();
@@ -28,8 +25,13 @@ void TasksList::updateTasks(QMap<QTime, QString> toDo)
             isComp=task[2].toInt();
             taskId=task[3].toInt();
         } else {continue;}
+        QString itemText;
+        if (writeDate==true) {
+            itemText = QString("%1 : %2")
+            .arg(it.key().toString("dd-MM HH:mm"))
+                .arg(taskText);
 
-        QString itemText = QString("%1 : %2")
+        }else itemText = QString("%1 : %2")
                                .arg(it.key().toString("HH:mm"))
                                .arg(taskText);
 
@@ -51,6 +53,7 @@ void TasksList::updateTasks(QMap<QTime, QString> toDo)
 
         addItem(item);
     }
+    writeDate=false;
 }
 
 QString TasksList::getItemByCategory(int x)
@@ -73,10 +76,6 @@ QString TasksList::getItemByCategory(int x)
 
 void TasksList::keyPressEvent(QKeyEvent *event)
 {
-    // if (event->key()==Qt::Key_Delete) {
-    //     emit deletionPressed();
-    // }
-    // QListWidget::keyPressEvent(event);
     if (event->key() == Qt::Key_Delete && m_deleteHandler) {
         if (auto item = currentItem()) {
             m_deleteHandler(item->data(Qt::UserRole).toInt());
@@ -99,6 +98,5 @@ void TasksList::handleDeletion(QListWidgetItem *item)
 
     if (!item->isSelected()) return;
     int taskId = item->data(Qt::UserRole).toInt();
-   // qDebug () << "in changing status" << taskId ;
     tasksDb->deleteTask(taskId);
 }

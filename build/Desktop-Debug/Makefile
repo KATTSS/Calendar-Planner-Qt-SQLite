@@ -52,7 +52,8 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../../contmenu.cpp \
+SOURCES       = ../../categoriesdialog.cpp \
+		../../contmenu.cpp \
 		../../database.cpp \
 		../../databasemanager.cpp \
 		../../datemanager.cpp \
@@ -61,7 +62,8 @@ SOURCES       = ../../contmenu.cpp \
 		../../mainwindow.cpp \
 		../../taskslist.cpp moc_datemanager.cpp \
 		moc_mainwindow.cpp
-OBJECTS       = contmenu.o \
+OBJECTS       = categoriesdialog.o \
+		contmenu.o \
 		database.o \
 		databasemanager.o \
 		datemanager.o \
@@ -148,13 +150,15 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../../../../Planer.pro ../../contmenu.h \
+		../../../../Planer.pro ../../categoriesdialog.h \
+		../../contmenu.h \
 		../../database.h \
 		../../databasemanager.h \
 		../../datemanager.h \
 		../../inputdioalog.h \
 		../../mainwindow.h \
-		../../taskslist.h ../../contmenu.cpp \
+		../../taskslist.h ../../categoriesdialog.cpp \
+		../../contmenu.cpp \
 		../../database.cpp \
 		../../databasemanager.cpp \
 		../../datemanager.cpp \
@@ -345,8 +349,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdioalog.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdioalog.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../categoriesdialog.h ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdioalog.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../categoriesdialog.cpp ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdioalog.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -418,6 +422,10 @@ compiler_lex_clean:
 compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
+
+categoriesdialog.o: ../../categoriesdialog.cpp ../../categoriesdialog.h \
+		../../datemanager.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o categoriesdialog.o ../../categoriesdialog.cpp
 
 contmenu.o: ../../contmenu.cpp ../../contmenu.h \
 		../../inputdioalog.h \

@@ -5,7 +5,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTableWidget>
-#include <QMenuBar>
+//#include <QMenuBar>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QDate>
@@ -38,18 +38,22 @@ private slots:
 
     void on_nextMonth_clicked();
 
+   // void on_sortByCategory_clicked();
+
     QString getSelectedDateText();
 
 private:
     Ui::MainWindow *ui;
-    QMenuBar *menu;
+    // QMenuBar *menu;
+    // QMenu *sortMenu;
 
+   // QVBoxLayout *mainLayout;
     QHBoxLayout *layout;
     QHBoxLayout *buttonLayout;
     QVBoxLayout *calendarLayout;
 
-    QAction *add;
-    QAction *remove;
+    //QAction *sortByCategory;
+    //QAction *remove;
 
     Database* calendarDb;
     Database* tasksDb;

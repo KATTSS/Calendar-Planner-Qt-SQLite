@@ -153,10 +153,10 @@ bool Database::addTask(const QDate &date, const QString &time, const QString &de
     return true;
 }
 
-QMap<QTime, QString> Database::getTasksAtDate(QDate &date)
+QMap<QDateTime, QString> Database::getTasksAtDate(QDate &date)
 {
     qDebug() << "before getting tasks";
-    QMap<QTime, QString> toDo;
+    QMap<QDateTime, QString> toDo;
     QSqlQuery taskQuery(this->database);
     taskQuery.prepare("SELECT description, time, category, is_completed, id FROM tasks WHERE date = ?");
     taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
@@ -167,7 +167,7 @@ QMap<QTime, QString> Database::getTasksAtDate(QDate &date)
             qDebug() << "decsription: " << description;
             QString timeStr = taskQuery.value("time").toString();
 
-            QTime time = QTime::fromString(timeStr, "HH:mm");
+            QDateTime time = QDateTime::fromString(timeStr, "HH:mm");
 
             if (time.isValid()) {
                 toDo.insert(time, description);
@@ -197,6 +197,35 @@ bool Database::deleteTask(int taskId)
     query.prepare("DELETE FROM tasks WHERE id = ?");
     query.addBindValue(taskId);
     return query.exec();
+}
+
+QMap<QDateTime, QString> Database::getTasksByCategory(int cat)
+{
+    QMap<QDateTime, QString> toDo;
+
+    QSqlQuery taskQuery(this->database);
+    taskQuery.prepare("SELECT description, time, is_completed, id, date FROM tasks WHERE category = ?");
+    taskQuery.addBindValue(QString::number(cat));
+    if (taskQuery.exec()) {
+        while (taskQuery.next()) {
+            QString description = taskQuery.value("description").toString()+"|"+taskQuery.value("category").toString()
+            +"|"+taskQuery.value("is_completed").toString()+"|"+taskQuery.value("id").toString();
+            qDebug() << "decsription: " << description;
+            QString timeStr = taskQuery.value("date").toString()+taskQuery.value("time").toString();
+
+            QDateTime dateTime = QDateTime::fromString(timeStr, "yyyy-MM-ddHH:mm");
+            qDebug() << "date and time for task from db: " << dateTime;
+
+            if (dateTime.isValid()) {
+                toDo.insert(dateTime, description);
+            } else {
+                qWarning() << "Invalid time format:" << timeStr;
+            }
+        }
+    }
+
+    qDebug() << "Найдено задач:" << toDo.size();
+    return toDo;
 }
 
 

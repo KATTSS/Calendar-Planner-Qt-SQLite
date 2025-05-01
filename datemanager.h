@@ -16,6 +16,7 @@ public:
 signals:
     void dateChanged(const QDate& date);
     void newTaskAdded();
+    void categorySelected(const int id);
 
 private:
     DateManager();

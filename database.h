@@ -3,7 +3,7 @@
 #include <QSqlDatabase>
 #include <QSqlTableModel>
 #include <QSqlQuery>
-#include <QDate>
+#include <QDateTime>
 
 #include <QDebug>
 
@@ -24,9 +24,11 @@ public:
 
     QVector<QDate> getDatesForMonth(int year, int month);
     bool addTask(const QDate &date, const QString &time, const QString &description, int category);
-    QMap<QTime, QString> getTasksAtDate(QDate &date);
+    QMap<QDateTime, QString> getTasksAtDate(QDate &date);
+
     bool updateTaskStatus(int taskId, bool completed);
     bool  deleteTask(int taskId);
+    QMap<QDateTime, QString> getTasksByCategory(int cat);
 
     QSqlDatabase database;
 };

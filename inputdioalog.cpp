@@ -43,6 +43,7 @@ InputDioalog::InputDioalog(QWidget *parent) : QDialog(parent) {
     tasksDb = DatabaseManager::instance().tasksDatabase();
 }
 
+
 void InputDioalog::on_saveButton_clicked()
 {
     qDebug() << "in save button";

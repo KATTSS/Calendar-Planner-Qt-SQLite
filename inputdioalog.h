@@ -17,6 +17,7 @@ class InputDioalog : public QDialog
 {
 public:
     InputDioalog(QWidget *parent = nullptr);
+
 private slots:
     void on_saveButton_clicked();
 

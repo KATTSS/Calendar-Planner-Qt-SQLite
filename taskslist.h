@@ -13,9 +13,10 @@ public:
     TasksList(QWidget *parent=nullptr);
     // QMap<QTime, QString> updateList(QDate &date);
 
-    void updateTasks(QMap<QTime, QString> toDo);
+    void updateTasks(QMap<QDateTime, QString> toDo);
     QString getItemByCategory(int x);
     void keyPressEvent(QKeyEvent *event) override;
+    void setWriteDateTrue() {writeDate=true;};
 
     using DeleteHandler = std::function<void(int taskId)>;
     void setDeleteHandler(DeleteHandler handler) {
@@ -33,6 +34,8 @@ public slots:
 private:
     Database *tasksDb;
     DeleteHandler m_deleteHandler;
+
+    bool writeDate=false;
 };
 
 #endif // TASKSLIST_H

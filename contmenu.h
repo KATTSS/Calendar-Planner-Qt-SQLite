@@ -7,6 +7,7 @@
 #include <QContextMenuEvent>
 
 #include "inputdioalog.h"
+#include "categoriesdialog.h"
 
 class ContMenu : public QWidget
 {
@@ -17,10 +18,12 @@ public:
         void contextMenuEvent(QContextMenuEvent *event) override;
     private slots:
         void addNewTask();
+        void sortByCat();
 
     private:
         QMenu *menu;
         QAction *addNew;
+        QAction *sortByCategory;
 
 };
 
