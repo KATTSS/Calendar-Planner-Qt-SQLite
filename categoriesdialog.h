@@ -12,17 +12,20 @@ class CategoriesDialog : public QDialog
 {
 public:
     CategoriesDialog(QWidget *parent = nullptr);
-private slots:
-    void on_okButton_clicked();
+    virtual void on_okButton_clicked();
+    int getCategoiesComboBox();
+    void initialiseCategory();
 
-private:
+//private:
+protected:
     QComboBox *category;
     QPushButton *ok;
     QVBoxLayout *layout;
 
     //Database* tasksDb;
 
-    int getCategoiesComboBox();
+    // int getCategoiesComboBox();
+    // void initialiseCategory();
 
 };
 

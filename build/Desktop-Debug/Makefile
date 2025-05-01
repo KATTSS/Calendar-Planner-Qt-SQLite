@@ -57,7 +57,7 @@ SOURCES       = ../../categoriesdialog.cpp \
 		../../database.cpp \
 		../../databasemanager.cpp \
 		../../datemanager.cpp \
-		../../inputdioalog.cpp \
+		../../inputdialog.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
 		../../taskslist.cpp moc_datemanager.cpp \
@@ -67,7 +67,7 @@ OBJECTS       = categoriesdialog.o \
 		database.o \
 		databasemanager.o \
 		datemanager.o \
-		inputdioalog.o \
+		inputdialog.o \
 		main.o \
 		mainwindow.o \
 		taskslist.o \
@@ -155,14 +155,14 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../../database.h \
 		../../databasemanager.h \
 		../../datemanager.h \
-		../../inputdioalog.h \
+		../../inputdialog.h \
 		../../mainwindow.h \
 		../../taskslist.h ../../categoriesdialog.cpp \
 		../../contmenu.cpp \
 		../../database.cpp \
 		../../databasemanager.cpp \
 		../../datemanager.cpp \
-		../../inputdioalog.cpp \
+		../../inputdialog.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
 		../../taskslist.cpp
@@ -349,8 +349,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../categoriesdialog.h ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdioalog.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../categoriesdialog.cpp ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdioalog.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../categoriesdialog.h ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdialog.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../categoriesdialog.cpp ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdialog.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -396,7 +396,8 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		../../databasemanager.h \
 		../../database.h \
 		../../contmenu.h \
-		../../inputdioalog.h \
+		../../inputdialog.h \
+		../../categoriesdialog.h \
 		../../datemanager.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -428,10 +429,11 @@ categoriesdialog.o: ../../categoriesdialog.cpp ../../categoriesdialog.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o categoriesdialog.o ../../categoriesdialog.cpp
 
 contmenu.o: ../../contmenu.cpp ../../contmenu.h \
-		../../inputdioalog.h \
-		../../datemanager.h \
+		../../inputdialog.h \
 		../../databasemanager.h \
-		../../database.h
+		../../database.h \
+		../../categoriesdialog.h \
+		../../datemanager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o contmenu.o ../../contmenu.cpp
 
 database.o: ../../database.cpp ../../database.h
@@ -444,18 +446,20 @@ databasemanager.o: ../../databasemanager.cpp ../../databasemanager.h \
 datemanager.o: ../../datemanager.cpp ../../datemanager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o datemanager.o ../../datemanager.cpp
 
-inputdioalog.o: ../../inputdioalog.cpp ../../inputdioalog.h \
-		../../datemanager.h \
+inputdialog.o: ../../inputdialog.cpp ../../inputdialog.h \
 		../../databasemanager.h \
-		../../database.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o inputdioalog.o ../../inputdioalog.cpp
+		../../database.h \
+		../../categoriesdialog.h \
+		../../datemanager.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o inputdialog.o ../../inputdialog.cpp
 
 main.o: ../../main.cpp ../../mainwindow.h \
 		../../taskslist.h \
 		../../databasemanager.h \
 		../../database.h \
 		../../contmenu.h \
-		../../inputdioalog.h \
+		../../inputdialog.h \
+		../../categoriesdialog.h \
 		../../datemanager.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
 
@@ -464,7 +468,8 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../databasemanager.h \
 		../../database.h \
 		../../contmenu.h \
-		../../inputdioalog.h \
+		../../inputdialog.h \
+		../../categoriesdialog.h \
 		../../datemanager.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
