@@ -17,6 +17,7 @@ signals:
     void dateChanged(const QDate& date);
     void newTaskAdded();
     void categorySelected(const int id);
+   // void newDeadline(const QDate& date);
 
 private:
     DateManager();

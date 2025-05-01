@@ -227,5 +227,45 @@ QMap<QDateTime, QString> Database::getTasksByCategory(int cat)
     qDebug() << "Найдено задач:" << toDo.size();
     return toDo;
 }
+QDate Database::getOptimalDate(const QDate &deadline) {
+    if (!database.isOpen() && !open()) {
+        qWarning() << "Failed to open database";
+        return QDate();
+    }
 
+    QDate currentDate = QDate::currentDate();
+    QDate bestDate = currentDate;
+    int minTaskCount = INT_MAX;
 
+    //qDebug() << "deadline :       " << deadline << "      current:        " << currentDate;
+
+    QSqlQuery query(database);
+    query.prepare("SELECT date, COUNT(*) as task_count FROM tasks "
+                  "WHERE date BETWEEN ? AND ? "
+                  "GROUP BY date");
+    query.addBindValue(currentDate.toString("yyyy-MM-dd"));
+    query.addBindValue(deadline.toString("yyyy-MM-dd"));
+
+    if (!query.exec()) {
+        qWarning() << "Query error:" << query.lastError().text();
+        return QDate();
+    }
+
+    QMap<QDate, int> dateTaskCounts;
+    while (query.next()) {
+        QDate date = QDate::fromString(query.value(0).toString(), "yyyy-MM-dd");
+        int count = query.value(1).toInt();
+        dateTaskCounts[date] = count;
+        qDebug() << dateTaskCounts[date] << " 1111";
+    }
+
+    for (QDate date = currentDate; date <= deadline; date = date.addDays(1)) {
+        int currentCount = dateTaskCounts.value(date, 0);
+        if (currentCount < minTaskCount) {
+            minTaskCount = currentCount;
+            bestDate = date;
+        }
+    }
+    qDebug() << "Оптимальная дата:" << bestDate << "(задач:" << minTaskCount << ")" << minTaskCount;
+    return bestDate;
+}

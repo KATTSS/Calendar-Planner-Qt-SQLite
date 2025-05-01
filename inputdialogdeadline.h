@@ -15,6 +15,9 @@ private :
 
     QHBoxLayout *dateLayout;
 
+    QDate getDeadlineDate();
+    void saveTaskByDeadline(const QDate deadline);
+
     QString getDate();
 };
 

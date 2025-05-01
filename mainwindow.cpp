@@ -89,6 +89,11 @@ MainWindow::MainWindow(QWidget *parent)
         list->updateTasks(tasks);
     });
 
+    // connect(&DateManager::instance(), &DateManager::newDeadline, this, [this](QDate deadline){
+    //     QDate date = tasksDb->getOptimalDate(deadline);
+
+    // })
+
     list->setDeleteHandler([this](int taskId) {
         tasksDb->deleteTask(taskId);
         updateCalendar();

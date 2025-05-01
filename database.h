@@ -29,6 +29,7 @@ public:
     bool updateTaskStatus(int taskId, bool completed);
     bool  deleteTask(int taskId);
     QMap<QDateTime, QString> getTasksByCategory(int cat);
+    QDate getOptimalDate(const QDate &deadline);
 
     QSqlDatabase database;
 };
