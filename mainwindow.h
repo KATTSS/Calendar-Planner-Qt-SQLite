@@ -40,7 +40,7 @@ private slots:
 
    // void on_sortByCategory_clicked();
 
-    QString getSelectedDateText();
+   // QString getSelectedDateText();
 
 private:
     Ui::MainWindow *ui;

@@ -24,25 +24,29 @@ MainWindow::MainWindow(QWidget *parent)
     calendar->setEditTriggers(QAbstractItemView::NoEditTriggers);
     calendar->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     calendar->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+
     updateCalendar();
 
-    calendarLayout = new QVBoxLayout(this);
+    calendarLayout = new QVBoxLayout();
     layout->addLayout(calendarLayout, 6);
 
-    buttonLayout = new QHBoxLayout(this);
-    calendarLayout->addLayout(buttonLayout);
-
-    calendarLayout->addWidget(calendar);
-
+    buttonLayout = new QHBoxLayout();
+    // calendarLayout->addLayout(buttonLayout);
 
     previousMonth = new QPushButton("<", this);
+    previousMonth->setFixedHeight(30);
     monthAndYear = new QLineEdit(this);
     monthAndYear->setReadOnly(true);
     monthAndYear->setFocusPolicy(Qt::NoFocus);
     nextMonth = new QPushButton(">", this);
+    nextMonth->setFixedHeight(30);
     buttonLayout->addWidget(previousMonth);
     buttonLayout->addWidget(monthAndYear);
     buttonLayout->addWidget(nextMonth);
+
+    calendarLayout->addLayout(buttonLayout);
+
+    calendarLayout->addWidget(calendar);
 
     list = new TasksList(this);
     layout->addWidget(list);
@@ -50,12 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     contMenu = new ContMenu(this);
 
-   // connect(sortByCategory, &QAction::triggered, this, &MainWindow::on_sortByCategory_clicked);
-
     connect(previousMonth, &QPushButton::clicked, this, &MainWindow::on_previousMonth_clicked);
     connect(nextMonth, &QPushButton::clicked, this, &MainWindow::on_nextMonth_clicked);
-
-    //connect(calendar, &QTableWidget::doubleClicked, this, &MainWindow::getSelectedDateText);
 
     connect(calendar, &QTableWidget::cellClicked, this, [this](int row, int col) {
         QTableWidgetItem* item = calendar->item(row, col);
@@ -66,9 +66,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
     });
 
-
     connect(calendar, &QTableWidget::cellDoubleClicked, this, [this](int row, int col) {
-        getSelectedDateText();
+       // getSelectedDateText();
         QTableWidgetItem* item = calendar->item(row, col);
         if (item && !item->text().isEmpty()) {
             int day = item->text().toInt();
@@ -89,21 +88,13 @@ MainWindow::MainWindow(QWidget *parent)
         list->updateTasks(tasks);
     });
 
-    // connect(&DateManager::instance(), &DateManager::newDeadline, this, [this](QDate deadline){
-    //     QDate date = tasksDb->getOptimalDate(deadline);
-
-    // })
-
     list->setDeleteHandler([this](int taskId) {
         tasksDb->deleteTask(taskId);
         updateCalendar();
     });
 
     updateMonthAndYearLineEdit(getDateMonthYear(QDate::currentDate()));
-    // centralWidget->setGeometry(0, menu->height(), window()->width(), window()->height()-menu->height());
-    // qDebug() << "Calendar geometry:" << calendar->geometry();
-    // qDebug() << "MenuBar geometry:" << menu->geometry();
-    // qDebug () << centralWidget->geometry()
+
 }
 
 MainWindow::~MainWindow()
@@ -113,6 +104,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_previousMonth_clicked()
 {
+    qDebug () << "on previous clicked";
     currentMonth= currentMonth.addMonths(-1);
     updateCalendar();
     updateMonthAndYearLineEdit(getDateMonthYear(currentMonth));
@@ -130,16 +122,33 @@ void MainWindow::on_nextMonth_clicked()
 //     qDebug() << "in action";
 // }
 
-QString MainWindow::getSelectedDateText()
-{
-    if(!calendar->selectedItems()[0]->text().isEmpty()) {
-    qDebug() << calendar->selectedItems()[0]->text();
-    return calendar->selectedItems()[0]->text();
-    }
-    else
-        qDebug() << "no items in this calendar slot";
-    return QString::number(QDate::currentDate().day());
-}
+// QString MainWindow::getSelectedDateText()
+// {
+//         auto selectedItems = calendar->selectedItems();
+//         if (selectedItems.isEmpty()) {
+//             qDebug() << "No selected items in calendar";
+//             return QString::number(QDate::currentDate().day());
+//         }
+
+//         QTableWidgetItem* item = selectedItems[0];
+//         if (!item->text().isEmpty()) {
+//             qDebug() << "Selected date:" << item->text();
+//             return item->text();
+//         } else {
+//             qDebug() << "Selected item has empty text";
+//             return QString::number(QDate::currentDate().day());
+
+//     }
+
+
+    // if(!calendar->selectedItems()[0]->text().isEmpty()) {
+    // qDebug() << calendar->selectedItems()[0]->text();
+    // return calendar->selectedItems()[0]->text();
+    // }
+    // else
+    //     qDebug() << "no items in this calendar slot";
+    // return QString::number(QDate::currentDate().day());
+//}
 
 void MainWindow::updateAll()
 {
@@ -177,29 +186,40 @@ void MainWindow::updateCalendar()
     QDate currentDate = currentDate1.addMonths(currentMonth.month() - currentDate1.month());
     QVector<QDate> dates = calendarDb->getDatesForMonth(currentDate.year(), currentDate.month());
 
+
     int firstDay = currentDate.addDays(-(currentDate.day() - 1)).dayOfWeek() % 7;
     if (firstDay == 0) firstDay = 7;
 
+
     int row = 0, col = firstDay - 1;
     for (const QDate &date : dates) {
-        if (col >= 7) {
-            col = 0;
-            row++;
+        // if (col >= 7) {
+        //     col = 0;
+        //     row++;
+        // }
+        if (row >= 6 || col >= 7) {
+            break;
         }
 
-
         QTableWidgetItem *item = new QTableWidgetItem(QString::number(date.day()));
+       // if (item->text().isEmpty()) item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
 
         QSqlQuery taskQuery(tasksDb->database);
         taskQuery.prepare("SELECT description FROM tasks WHERE date = ?");
         taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
         if (taskQuery.exec() && taskQuery.next()) {
-            item->setBackground(Qt::yellow);
+            item->setBackground(QColor("#fafad2"));
             item->setToolTip(taskQuery.value(0).toString());
         }
-        if(date==currentDate1) item->setBackground(QColor("#191970"));
+        if(date==currentDate1) item->setBackground(QColor("#ffc0cb"));
         calendar->setItem(row, col, item);
         col++;
+
+        if (col >= 7) {
+            col = 0;
+            row++;
+        }
+
     }
     vScroll->setValue(vValue);
     hScroll->setValue(hValue);

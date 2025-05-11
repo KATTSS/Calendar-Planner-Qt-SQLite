@@ -256,7 +256,7 @@ QDate Database::getOptimalDate(const QDate &deadline) {
         QDate date = QDate::fromString(query.value(0).toString(), "yyyy-MM-dd");
         int count = query.value(1).toInt();
         dateTaskCounts[date] = count;
-        qDebug() << dateTaskCounts[date] << " 1111";
+        //qDebug() << dateTaskCounts[date] << " 1111";
     }
 
     for (QDate date = currentDate; date <= deadline; date = date.addDays(1)) {
