@@ -18,7 +18,6 @@ SOURCES += \
     inputdialogdeadline.cpp \
     main.cpp \
     mainwindow.cpp \
-    optimus.cpp \
     taskslist.cpp
 
 HEADERS += \
@@ -30,7 +29,6 @@ HEADERS += \
     inputdialog.h \
     inputdialogdeadline.h \
     mainwindow.h \
-    optimus.h \
     taskslist.h
 
 FORMS += \

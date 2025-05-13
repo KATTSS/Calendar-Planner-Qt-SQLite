@@ -6,7 +6,6 @@
 #include <QVBoxLayout>
 #include <QComboBox>
 
-//#include "databasemanager.h"
 #include "datemanager.h"
 class CategoriesDialog : public QDialog
 {
@@ -22,10 +21,6 @@ protected:
     QPushButton *ok;
     QVBoxLayout *layout;
 
-    //Database* tasksDb;
-
-    // int getCategoiesComboBox();
-    // void initialiseCategory();
 
 };
 

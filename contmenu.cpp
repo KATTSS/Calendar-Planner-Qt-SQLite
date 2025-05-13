@@ -26,7 +26,7 @@ void ContMenu::contextMenuEvent(QContextMenuEvent *event)
 
 void ContMenu::addNewTask()
 {
-    qDebug() << "adding opened";
+  //  qDebug() << "adding opened";
     InputDialog *newInput = new InputDialog();
     newInput->show();
 
@@ -34,7 +34,7 @@ void ContMenu::addNewTask()
 
 void ContMenu::sortByCat()
 {
-    qDebug() << "in adding tasks";
+  //  qDebug() << "in adding tasks";
     CategoriesDialog *newDialog = new CategoriesDialog();
     newDialog->show();
 }

@@ -5,9 +5,6 @@
 #include <QAction>
 #include <QMenu>
 #include <QContextMenuEvent>
-
-// #include "inputdialog.h"
-// #include "categoriesdialog.h"
 #include "inputdialogdeadline.h"
 
 class ContMenu : public QWidget

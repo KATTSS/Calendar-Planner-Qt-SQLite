@@ -11,7 +11,6 @@ class TasksList: public QListWidget
 {
 public:
     TasksList(QWidget *parent=nullptr);
-    // QMap<QTime, QString> updateList(QDate &date);
 
     void updateTasks(QMap<QDateTime, QString> toDo);
     QString getItemByCategory(int x);
@@ -22,10 +21,6 @@ public:
     void setDeleteHandler(DeleteHandler handler) {
         m_deleteHandler = handler;
     }
-
-
-// signals:
-//     void  deletionPressed();
 
 public slots:
     void handleItemChange(QListWidgetItem* item);

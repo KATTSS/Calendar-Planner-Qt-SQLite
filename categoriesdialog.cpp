@@ -15,8 +15,6 @@ CategoriesDialog::CategoriesDialog(QWidget *parent): QDialog(parent) {
     layout->addWidget(category);
     layout->addWidget(ok);
 
-   // tasksDb = DatabaseManager::instance().tasksDatabase();
-
     connect(ok, &QPushButton::clicked, this, &CategoriesDialog::on_okButton_clicked);
 }
 

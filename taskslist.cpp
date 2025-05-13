@@ -11,7 +11,7 @@ void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
 {
     clear();
     QMapIterator<QDateTime, QString> it(toDo);
-    qDebug() << "size of toDo list: " << toDo.size();
+   // qDebug() << "size of toDo list: " << toDo.size();
     while (it.hasNext()) {
         it.next();
 
@@ -35,7 +35,7 @@ void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
                                .arg(it.key().toString("HH:mm"))
                                .arg(taskText);
 
-        qDebug() << "itemText: " << itemText;
+     //   qDebug() << "itemText: " << itemText;
 
         QListWidgetItem* item = new QListWidgetItem(itemText, this);
         item->setData(Qt::UserRole, taskId);
@@ -89,7 +89,7 @@ void TasksList::handleItemChange(QListWidgetItem *item)
 {
     int taskId = item->data(Qt::UserRole).toInt();
     bool completed = (item->checkState() == Qt::Checked);
-    qDebug () << "in changing status" << taskId << " " << completed;
+  //  qDebug () << "in changing status" << taskId << " " << completed;
     tasksDb->updateTaskStatus(taskId, completed);
 }
 

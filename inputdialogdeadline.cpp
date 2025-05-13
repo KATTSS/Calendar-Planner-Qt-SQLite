@@ -28,21 +28,21 @@ InputDialogDeadline::InputDialogDeadline(QWidget *parent) : InputDialog(parent)
 
 void InputDialogDeadline::on_okButton_clicked()
 {
-    qDebug() << "ready to place before deadline time(" << getDate() << ")";
+  //  qDebug() << "ready to place before deadline time(" << getDate() << ")";
     //emit DateManager::instance().newDeadline(getDeadlineDate());
     QString task = taskInputLine->text() + "(" + getDate() + ")";
     QString time = getTime();
     int cat = this->getCategoiesComboBox();
     QDate date = tasksDb->getOptimalDate(getDeadlineDate());
 
-    qDebug() << "Date:" << date << "Time:" << time << "Task:" << task << "Category:" << cat;
+    //qDebug() << "Date:" << date << "Time:" << time << "Task:" << task << "Category:" << cat;
 
     if(tasksDb->open()) {
-        qDebug() << "database opened";
+        //qDebug() << "database opened";
         tasksDb->addTask(date, time, task, cat);
         emit DateManager::instance().newTaskAdded();
     }
-    qDebug() << "saving was done";
+    //qDebug() << "saving was done";
     this->close();
 }
 

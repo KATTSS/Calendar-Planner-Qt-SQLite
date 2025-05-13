@@ -61,7 +61,6 @@ SOURCES       = ../../categoriesdialog.cpp \
 		../../inputdialogdeadline.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../optimus.cpp \
 		../../taskslist.cpp moc_datemanager.cpp \
 		moc_mainwindow.cpp
 OBJECTS       = categoriesdialog.o \
@@ -73,7 +72,6 @@ OBJECTS       = categoriesdialog.o \
 		inputdialogdeadline.o \
 		main.o \
 		mainwindow.o \
-		optimus.o \
 		taskslist.o \
 		moc_datemanager.o \
 		moc_mainwindow.o
@@ -162,7 +160,6 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../../inputdialog.h \
 		../../inputdialogdeadline.h \
 		../../mainwindow.h \
-		../../optimus.h \
 		../../taskslist.h ../../categoriesdialog.cpp \
 		../../contmenu.cpp \
 		../../database.cpp \
@@ -172,7 +169,6 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		../../inputdialogdeadline.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../optimus.cpp \
 		../../taskslist.cpp
 QMAKE_TARGET  = Planer
 DESTDIR       = 
@@ -357,8 +353,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../categoriesdialog.h ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdialog.h ../../inputdialogdeadline.h ../../mainwindow.h ../../optimus.h ../../taskslist.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../categoriesdialog.cpp ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdialog.cpp ../../inputdialogdeadline.cpp ../../main.cpp ../../mainwindow.cpp ../../optimus.cpp ../../taskslist.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../categoriesdialog.h ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdialog.h ../../inputdialogdeadline.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../categoriesdialog.cpp ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdialog.cpp ../../inputdialogdeadline.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -493,9 +489,6 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../datemanager.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
-
-optimus.o: ../../optimus.cpp ../../optimus.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o optimus.o ../../optimus.cpp
 
 taskslist.o: ../../taskslist.cpp ../../taskslist.h \
 		../../databasemanager.h \

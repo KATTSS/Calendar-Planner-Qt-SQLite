@@ -5,7 +5,6 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTableWidget>
-//#include <QMenuBar>
 #include <QPushButton>
 #include <QLineEdit>
 #include <QDate>
@@ -13,11 +12,9 @@
 #include <QMutex>
 #include <QScrollBar>
 #include <QTimer>
-
+#include <QGridLayout>
 #include "taskslist.h"
 #include "contmenu.h"
-#include "datemanager.h"
-#include "databasemanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -38,22 +35,13 @@ private slots:
 
     void on_nextMonth_clicked();
 
-   // void on_sortByCategory_clicked();
-
-   // QString getSelectedDateText();
-
 private:
     Ui::MainWindow *ui;
-    // QMenuBar *menu;
-    // QMenu *sortMenu;
 
-   // QVBoxLayout *mainLayout;
-    QHBoxLayout *layout;
+   // QHBoxLayout *layout;
     QHBoxLayout *buttonLayout;
-    QVBoxLayout *calendarLayout;
-
-    //QAction *sortByCategory;
-    //QAction *remove;
+   // QVBoxLayout *calendarLayout;
+    QGridLayout *dataLayout;
 
     Database* calendarDb;
     Database* tasksDb;
@@ -68,7 +56,6 @@ private:
 
     ContMenu *contMenu;
 
-   // QDate m_lastSelectedDate;
     QMutex m_updateMutex;
     bool m_isUpdating = false;
 

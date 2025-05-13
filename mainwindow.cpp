@@ -8,14 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    // menu = this->menuBar();
-    // sortMenu = menu->addMenu("Sort");
-    // sortByCategory = sortMenu->addAction("Sort by event category");
-
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
-
-    layout = new QHBoxLayout(centralWidget);
 
     calendarDb = DatabaseManager::instance().calendarDatabase();
     tasksDb = DatabaseManager::instance().tasksDatabase();
@@ -27,11 +21,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateCalendar();
 
-    calendarLayout = new QVBoxLayout();
-    layout->addLayout(calendarLayout, 6);
-
     buttonLayout = new QHBoxLayout();
-    // calendarLayout->addLayout(buttonLayout);
+
+    dataLayout = new QGridLayout(centralWidget);
 
     previousMonth = new QPushButton("<", this);
     previousMonth->setFixedHeight(30);
@@ -44,15 +36,18 @@ MainWindow::MainWindow(QWidget *parent)
     buttonLayout->addWidget(monthAndYear);
     buttonLayout->addWidget(nextMonth);
 
-    calendarLayout->addLayout(buttonLayout);
-
-    calendarLayout->addWidget(calendar);
-
     list = new TasksList(this);
-    layout->addWidget(list);
-    list->setStyleSheet("font-size : 16px;");
 
-    contMenu = new ContMenu(this);
+    dataLayout->addLayout(buttonLayout, 0, 0, 1, 1, Qt::AlignBottom);
+    dataLayout->addWidget(calendar, 1, 0);
+    dataLayout->addWidget(list, 0, 1, 2, 1);
+
+    dataLayout->setColumnStretch(0, 2);
+    dataLayout->setColumnStretch(1, 1);
+
+    list->setStyleSheet("font-size : 18px;");
+
+    contMenu = new ContMenu();
 
     connect(previousMonth, &QPushButton::clicked, this, &MainWindow::on_previousMonth_clicked);
     connect(nextMonth, &QPushButton::clicked, this, &MainWindow::on_nextMonth_clicked);
@@ -82,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     }, Qt::QueuedConnection);
 
     connect(&DateManager::instance(), &DateManager::categorySelected, this, [this](int id) {
-        qDebug() << "there will be updation ot categorised tasks";
+       // qDebug() << "there will be updation ot categorised tasks";
         QMap<QDateTime, QString> tasks = tasksDb->getTasksByCategory(id);
         list->setWriteDateTrue();
         list->updateTasks(tasks);
@@ -104,7 +99,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_previousMonth_clicked()
 {
-    qDebug () << "on previous clicked";
+    //qDebug () << "on previous clicked";
     currentMonth= currentMonth.addMonths(-1);
     updateCalendar();
     updateMonthAndYearLineEdit(getDateMonthYear(currentMonth));
@@ -116,39 +111,6 @@ void MainWindow::on_nextMonth_clicked()
     updateCalendar();
     updateMonthAndYearLineEdit(getDateMonthYear(currentMonth));
 }
-
-// void MainWindow::on_sortByCategory_clicked()
-// {
-//     qDebug() << "in action";
-// }
-
-// QString MainWindow::getSelectedDateText()
-// {
-//         auto selectedItems = calendar->selectedItems();
-//         if (selectedItems.isEmpty()) {
-//             qDebug() << "No selected items in calendar";
-//             return QString::number(QDate::currentDate().day());
-//         }
-
-//         QTableWidgetItem* item = selectedItems[0];
-//         if (!item->text().isEmpty()) {
-//             qDebug() << "Selected date:" << item->text();
-//             return item->text();
-//         } else {
-//             qDebug() << "Selected item has empty text";
-//             return QString::number(QDate::currentDate().day());
-
-//     }
-
-
-    // if(!calendar->selectedItems()[0]->text().isEmpty()) {
-    // qDebug() << calendar->selectedItems()[0]->text();
-    // return calendar->selectedItems()[0]->text();
-    // }
-    // else
-    //     qDebug() << "no items in this calendar slot";
-    // return QString::number(QDate::currentDate().day());
-//}
 
 void MainWindow::updateAll()
 {
@@ -193,16 +155,12 @@ void MainWindow::updateCalendar()
 
     int row = 0, col = firstDay - 1;
     for (const QDate &date : dates) {
-        // if (col >= 7) {
-        //     col = 0;
-        //     row++;
-        // }
+
         if (row >= 6 || col >= 7) {
             break;
         }
 
         QTableWidgetItem *item = new QTableWidgetItem(QString::number(date.day()));
-       // if (item->text().isEmpty()) item->setFlags(item->flags() & ~Qt::ItemIsEnabled);
 
         QSqlQuery taskQuery(tasksDb->database);
         taskQuery.prepare("SELECT description FROM tasks WHERE date = ?");
@@ -229,7 +187,7 @@ void MainWindow::updateCalendar()
 
 void MainWindow::updateTasksList(QDate date)
 {
-    qDebug() << "Updating tasks for:" << date;
+   // qDebug() << "Updating tasks for:" << date;
     QMap<QDateTime, QString> tasks = tasksDb->getTasksAtDate(date);
     list->updateTasks(tasks);
 }
