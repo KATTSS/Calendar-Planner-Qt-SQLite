@@ -23,7 +23,7 @@ public:
     bool createCalendar();
 
     QVector<QDate> getDatesForMonth(int year, int month);
-    bool addTask(const QDate &date, const QString &time, const QString &description, int category);
+    bool addTask(const QDate &date, const QString &time, const QString &description, int category, bool deadline=false);
     QMap<QDateTime, QString> getTasksAtDate(QDate &date);
 
     bool updateTaskStatus(int taskId, bool completed);

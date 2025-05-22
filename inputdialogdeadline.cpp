@@ -30,15 +30,18 @@ void InputDialogDeadline::on_okButton_clicked()
 {
   //  qDebug() << "ready to place before deadline time(" << getDate() << ")";
     //emit DateManager::instance().newDeadline(getDeadlineDate());
-    QString task = taskInputLine->text() + "(" + getDate() + ")";
+    QString task = taskInputLine->text();
     QString time = getTime();
     int cat = this->getCategoiesComboBox();
     QDate date = tasksDb->getOptimalDate(getDeadlineDate());
+    QDate deadline = getDeadlineDate();
 
     //qDebug() << "Date:" << date << "Time:" << time << "Task:" << task << "Category:" << cat;
 
     if(tasksDb->open()) {
         //qDebug() << "database opened";
+        tasksDb->addTask(deadline, time, task, cat, true);
+        task+="(" + getDate() + ")";
         tasksDb->addTask(date, time, task, cat);
         emit DateManager::instance().newTaskAdded();
     }

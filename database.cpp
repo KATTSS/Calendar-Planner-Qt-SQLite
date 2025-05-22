@@ -77,8 +77,8 @@ QSqlTableModel *Database::createTableModel(const QString &tableName, QObject *pa
 bool Database::createCalendar() {
 
     createTable("calendar", "d TEXT UNIQUE NOT NULL,"
-                            "dayofweek INT NOT NULL,"
-            "weekday TEXT NOT NULL,"
+                           // "dayofweek INT NOT NULL,"
+           // "weekday TEXT NOT NULL,"
             "year INT NOT NULL,"
             "month INT NOT NULL,"
                             "day INT NOT NULL");
@@ -91,12 +91,12 @@ bool Database::createCalendar() {
     for (QDate date = startDate; date <= endDate; date = date.addDays(1)) {
         query.prepare(R"(
             INSERT OR IGNORE INTO calendar
-            (d, dayofweek, weekday, year, month, day)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (d,  year, month, day)
+            VALUES (?, ?, ?, ?)
         )");
         query.addBindValue(date.toString("yyyy-MM-dd"));
-        query.addBindValue((date.dayOfWeek() + 5) % 7);
-        query.addBindValue(QLocale::system().dayName(date.dayOfWeek(), QLocale::LongFormat));
+        //query.addBindValue((date.dayOfWeek() + 5) % 7);
+        //query.addBindValue(QLocale::system().dayName(date.dayOfWeek(), QLocale::LongFormat));
         query.addBindValue(date.year());
         query.addBindValue(date.month());
         query.addBindValue(date.day());
@@ -132,18 +132,19 @@ QVector<QDate> Database::getDatesForMonth(int year, int month) {
     return dates;
 }
 
-bool Database::addTask(const QDate &date, const QString &time, const QString &description, int category)
+bool Database::addTask(const QDate &date, const QString &time, const QString &description, int category, bool deadline)
 {
     QSqlQuery query(database);
-   // qDebug() << "in adding tasks to database with category";
+   // qDebug() << "in adding tasks to database";
     query.prepare(R"(
-        INSERT INTO tasks (date, time, description, category)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO tasks (date, time, description, category, deadline)
+        VALUES (?, ?, ?, ?, ?)
     )");
     query.addBindValue(date.toString("yyyy-MM-dd"));
     query.addBindValue(time);
     query.addBindValue(description);
     query.addBindValue(category);
+    query.addBindValue(deadline? 1 : 0);
 
     if (!query.exec()) {
         qWarning() << "Ошибка добавления задачи:" << query.lastError().text();
@@ -153,17 +154,18 @@ bool Database::addTask(const QDate &date, const QString &time, const QString &de
     return true;
 }
 
+
 QMap<QDateTime, QString> Database::getTasksAtDate(QDate &date)
 {
   //  qDebug() << "before getting tasks";
     QMap<QDateTime, QString> toDo;
     QSqlQuery taskQuery(this->database);
-    taskQuery.prepare("SELECT description, time, category, is_completed, id FROM tasks WHERE date = ?");
+    taskQuery.prepare("SELECT description, time, category, is_completed, deadline, id FROM tasks WHERE date = ?");
     taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
     if (taskQuery.exec()) {
         while (taskQuery.next()) {
             QString description = taskQuery.value("description").toString()+"|"+taskQuery.value("category").toString()
-                                  +"|"+taskQuery.value("is_completed").toString()+"|"+taskQuery.value("id").toString();
+                                  +"|"+taskQuery.value("is_completed").toString()+"|"+taskQuery.value("deadline").toString()+"|"+taskQuery.value("id").toString();
            // qDebug() << "decsription: " << description;
             QString timeStr = taskQuery.value("time").toString();
 
@@ -233,8 +235,8 @@ QDate Database::getOptimalDate(const QDate &deadline) {
         return QDate();
     }
 
-    QDate currentDate = QDate::currentDate();
-    QDate bestDate = currentDate;
+    QDate tomorrow = QDate::currentDate().addDays(1);
+    QDate bestDate = tomorrow;
     int minTaskCount = INT_MAX;
 
     //qDebug() << "deadline :       " << deadline << "      current:        " << currentDate;
@@ -243,7 +245,7 @@ QDate Database::getOptimalDate(const QDate &deadline) {
     query.prepare("SELECT date, COUNT(*) as task_count FROM tasks "
                   "WHERE date BETWEEN ? AND ? "
                   "GROUP BY date");
-    query.addBindValue(currentDate.toString("yyyy-MM-dd"));
+    query.addBindValue(tomorrow.toString("yyyy-MM-dd"));
     query.addBindValue(deadline.toString("yyyy-MM-dd"));
 
     if (!query.exec()) {
@@ -259,7 +261,7 @@ QDate Database::getOptimalDate(const QDate &deadline) {
         //qDebug() << dateTaskCounts[date] << " 1111";
     }
 
-    for (QDate date = currentDate; date <= deadline; date = date.addDays(1)) {
+    for (QDate date = tomorrow; date <= deadline; date = date.addDays(1)) {
         int currentCount = dateTaskCounts.value(date, 0);
         if (currentCount < minTaskCount) {
             minTaskCount = currentCount;

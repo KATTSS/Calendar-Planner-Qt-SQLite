@@ -16,14 +16,15 @@ void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
         it.next();
 
         QString taskText;
-        int cat, isComp=0, taskId;
+        int cat, isComp=0,isDeadline, taskId;
 
         QStringList task=it.value().split("|");
         if (task.size()>=4) {
             taskText=task[0];
             cat=task[1].toInt();
             isComp=task[2].toInt();
-            taskId=task[3].toInt();
+            isDeadline=task[3].toInt();
+            taskId=task[4].toInt();
         } else {continue;}
         QString itemText;
         if (writeDate==true) {
@@ -31,9 +32,15 @@ void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
             .arg(it.key().toString("dd-MM HH:mm"))
                 .arg(taskText);
 
-        }else itemText = QString("%1 : %2")
+        }else {
+            if (isDeadline)    itemText = QString("!!! %1 : %2")
                                .arg(it.key().toString("HH:mm"))
                                .arg(taskText);
+
+            else  itemText = QString("%1 : %2")
+                               .arg(it.key().toString("HH:mm"))
+                               .arg(taskText);
+        }
 
      //   qDebug() << "itemText: " << itemText;
 
