@@ -26,7 +26,8 @@ DatabaseManager::DatabaseManager()
                                  "description TEXT, "
                                  "category INT, "
                                  "is_completed BOOLEAN DEFAULT 0, "
-                                 "deadline BOOLEAN DEFAULT 0, "
+                                 "is_deadline BOOLEAN DEFAULT 0,"
+                                 "deadline TEXT, "
                                  "FOREIGN KEY(date) REFERENCES calendar(d)"
                                  );
 }

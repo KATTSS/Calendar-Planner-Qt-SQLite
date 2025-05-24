@@ -66,7 +66,5 @@ private:
     void selectDateInCalendar(const QDate &date);
     QString getDateMonthYear(const QDate date);
     void updateMonthAndYearLineEdit(const QString &monthandyear);
-
-
 };
 #endif // MAINWINDOW_H

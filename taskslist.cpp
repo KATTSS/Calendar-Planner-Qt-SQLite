@@ -19,12 +19,14 @@ void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
         int cat, isComp=0,isDeadline, taskId;
 
         QStringList task=it.value().split("|");
-        if (task.size()>=4) {
+      //  qDebug () << "size of task for list: " << task.size();
+        if (task.size()>=5) {
             taskText=task[0];
             cat=task[1].toInt();
             isComp=task[2].toInt();
             isDeadline=task[3].toInt();
             taskId=task[4].toInt();
+           // qDebug () << "oook";
         } else {continue;}
         QString itemText;
         if (writeDate==true) {

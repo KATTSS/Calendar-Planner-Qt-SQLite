@@ -33,16 +33,17 @@ void InputDialogDeadline::on_okButton_clicked()
     QString task = taskInputLine->text();
     QString time = getTime();
     int cat = this->getCategoiesComboBox();
-    QDate date = tasksDb->getOptimalDate(getDeadlineDate());
     QDate deadline = getDeadlineDate();
-
+    if (deadline == QDate()) {this->close(); return;}
+    qDebug () << "selected deadline: " << deadline;
+    QDate date = tasksDb->getOptimalDate(deadline);
     //qDebug() << "Date:" << date << "Time:" << time << "Task:" << task << "Category:" << cat;
 
     if(tasksDb->open()) {
         //qDebug() << "database opened";
-        tasksDb->addTask(deadline, time, task, cat, true);
+        tasksDb->addTask(deadline, time, task, cat);
         task+="(" + getDate() + ")";
-        tasksDb->addTask(date, time, task, cat);
+        tasksDb->addTask(date, time, task, cat, true, deadline);
         emit DateManager::instance().newTaskAdded();
     }
     //qDebug() << "saving was done";
@@ -52,7 +53,10 @@ void InputDialogDeadline::on_okButton_clicked()
 QDate InputDialogDeadline::getDeadlineDate()
 {
     QDate deadline(QDate::currentDate().year(), month->value(), day->value());
-    return (deadline < QDate::currentDate() || !deadline.isValid()) ? QDate::currentDate() : deadline;
+    //return (deadline < QDate::currentDate() || !deadline.isValid()) ? QDate::currentDate() : deadline;
+    if (deadline < QDate::currentDate()) return deadline.addYears(1);
+    if (!deadline.isValid()) return QDate();
+    return deadline;
 }
 
 QString InputDialogDeadline::getDate()

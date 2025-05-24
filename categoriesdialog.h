@@ -13,7 +13,7 @@ public:
     CategoriesDialog(QWidget *parent = nullptr);
     virtual void on_okButton_clicked();
     int getCategoiesComboBox();
-    void initialiseCategory();
+    //void initialiseCategory();
 
 //private:
 protected:

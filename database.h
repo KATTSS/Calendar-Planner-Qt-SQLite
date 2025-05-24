@@ -23,13 +23,14 @@ public:
     bool createCalendar();
 
     QVector<QDate> getDatesForMonth(int year, int month);
-    bool addTask(const QDate &date, const QString &time, const QString &description, int category, bool deadline=false);
+    bool addTask(const QDate &date, const QString &time, const QString &description, int category, bool is_deadline = false,  const QDate &deadline=QDate(0,0,0));
     QMap<QDateTime, QString> getTasksAtDate(QDate &date);
 
     bool updateTaskStatus(int taskId, bool completed);
     bool  deleteTask(int taskId);
     QMap<QDateTime, QString> getTasksByCategory(int cat);
     QDate getOptimalDate(const QDate &deadline);
+    void moveDeadlineTasks();
 
     QSqlDatabase database;
 };

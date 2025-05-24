@@ -35,12 +35,12 @@ int CategoriesDialog::getCategoiesComboBox()
     return 0;
 }
 
-void CategoriesDialog::initialiseCategory()
-{
-    category->addItem("Entertainment", 1);
-    category->addItem("Meeting", 2);
-    category->addItem("Sport", 3);
-    category->addItem("Work", 4);
-    category->addItem("HealthCare", 5);
-    category->addItem("Other", 6);
-}
+// void CategoriesDialog::initialiseCategory()
+// {
+//     category->addItem("Entertainment", 1);
+//     category->addItem("Meeting", 2);
+//     category->addItem("Sport", 3);
+//     category->addItem("Work", 4);
+//     category->addItem("HealthCare", 5);
+//     category->addItem("Other", 6);
+// }

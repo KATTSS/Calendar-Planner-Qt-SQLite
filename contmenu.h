@@ -25,6 +25,8 @@ public:
         QAction *sortByCategory;
         QAction *deadlineSet;
 
+        void setStyle(CategoriesDialog* dialog);
+
 };
 
 #endif // CONTMENU_H

@@ -8,6 +8,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    //setWindowFlags(Qt::FramelessWindowHint);
+
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);
 
@@ -62,7 +64,6 @@ MainWindow::MainWindow(QWidget *parent)
     });
 
     connect(calendar, &QTableWidget::cellDoubleClicked, this, [this](int row, int col) {
-       // getSelectedDateText();
         QTableWidgetItem* item = calendar->item(row, col);
         if (item && !item->text().isEmpty()) {
             int day = item->text().toInt();
@@ -79,6 +80,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&DateManager::instance(), &DateManager::categorySelected, this, [this](int id) {
        // qDebug() << "there will be updation ot categorised tasks";
         QMap<QDateTime, QString> tasks = tasksDb->getTasksByCategory(id);
+       qDebug() << "size of tasks by category " << id << " " << tasks.size();
         list->setWriteDateTrue();
         list->updateTasks(tasks);
     });
@@ -90,6 +92,70 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateMonthAndYearLineEdit(getDateMonthYear(QDate::currentDate()));
 
+    QString styleSheet =  R"(
+    QMainWindow {
+        background-color: #C4B6FF;
+    }
+
+    QLineEdit {
+        background-color: #FFF5CD;
+        border: 1px solid #8F77FF;
+        color: #0C042F;
+        padding: 5px;
+        border-radius: 4px;
+        font: bold 14px;
+    }
+    QTableWidget {
+        background-color: #E7E2FF;
+        color: #0C042F;
+        border-radius: 4px;
+    }
+    QTableWidget::item:selected {
+        background-color: #44308B;
+    }
+    QTableWidget QHeaderView::section {
+        background-color: #E7E2FF;
+        color: #0C042F;
+    }
+    QPushButton {
+        width: 30px;
+        background-color: #AC9AFF;
+        color: #0C042F;
+        border: 1px solid #8F77FF;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font: bold 15px;
+    }
+
+)";
+    this->setStyleSheet(styleSheet);
+    list ->setStyleSheet(R"(
+    QListWidget {
+        background-color: #F2F0FC;
+        border: 1px solid #8F77FF;
+        color: #0C042F;
+        border-radius: 4px;
+    }
+
+    QListWidget::item:selected {
+        background-color: #44308B;
+    }
+)");
+
+    contMenu->setStyleSheet(R"(
+    QMenu {
+        background-color: #FFF1B8;
+    }
+    QMenu::item {
+        padding: 8px 8px 8px 8px;
+        margin: 2px;
+
+    }
+    QMenu::item:hover {
+        background-color: #FFE268;
+        color: #0C042F;
+    }
+)");
 }
 
 MainWindow::~MainWindow()
@@ -146,7 +212,7 @@ void MainWindow::updateCalendar()
     calendar->setHorizontalHeaderLabels({"Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"});
     QDate currentDate1 = QDate::currentDate();
     QDate currentDate = currentDate1.addMonths(currentMonth.month() - currentDate1.month());
-    QVector<QDate> dates = calendarDb->getDatesForMonth(currentDate.year(), currentDate.month());
+    QVector<QDate> dates = calendarDb->getDatesForMonth(currentMonth.year(), currentDate.month());
 
 
     int firstDay = currentDate.addDays(-(currentDate.day() - 1)).dayOfWeek() % 7;
@@ -166,10 +232,10 @@ void MainWindow::updateCalendar()
         taskQuery.prepare("SELECT description FROM tasks WHERE date = ?");
         taskQuery.addBindValue(date.toString("yyyy-MM-dd"));
         if (taskQuery.exec() && taskQuery.next()) {
-            item->setBackground(QColor("#fafad2"));
+            item->setBackground(QColor("#FFF1B8"));
             item->setToolTip(taskQuery.value(0).toString());
         }
-        if(date==currentDate1) item->setBackground(QColor("#ffc0cb"));
+        if(date==currentDate1) item->setBackground(QColor("#FFE268"));
         calendar->setItem(row, col, item);
         col++;
 
@@ -199,6 +265,7 @@ QDate MainWindow::getSelectedDate()
 
     bool ok;
     int day = items.first()->text().toInt(&ok);
+    //QDate mandy = getMnthAndYearFromLineEdit();
     return ok ? QDate(currentMonth.year(), currentMonth.month(), day) : QDate();
 }
 
@@ -268,4 +335,5 @@ void MainWindow::updateMonthAndYearLineEdit(const QString &monthandyear)
     monthAndYear->clear();
     monthAndYear->setText(monthandyear);
 }
+
 
