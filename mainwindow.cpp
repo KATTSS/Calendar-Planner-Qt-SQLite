@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     //setWindowFlags(Qt::FramelessWindowHint);
+    this->setWindowTitle("MyPL");
 
     QWidget *centralWidget = new QWidget(this);
     setCentralWidget(centralWidget);

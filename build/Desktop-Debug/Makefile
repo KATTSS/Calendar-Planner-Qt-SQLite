@@ -61,7 +61,8 @@ SOURCES       = ../../categoriesdialog.cpp \
 		../../inputdialogdeadline.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../taskslist.cpp moc_datemanager.cpp \
+		../../taskslist.cpp qrc_resources.cpp \
+		moc_datemanager.cpp \
 		moc_mainwindow.cpp
 OBJECTS       = categoriesdialog.o \
 		contmenu.o \
@@ -73,6 +74,7 @@ OBJECTS       = categoriesdialog.o \
 		main.o \
 		mainwindow.o \
 		taskslist.o \
+		qrc_resources.o \
 		moc_datemanager.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -85,6 +87,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_charts.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_core.pri \
@@ -191,6 +194,7 @@ Makefile: ../../Planer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/qma
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
+		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_charts.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_core.pri \
@@ -258,7 +262,8 @@ Makefile: ../../Planer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/qma
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../../Planer.pro
+		../../Planer.pro \
+		../../resources.qrc
 	$(QMAKE) -o Makefile ../../Planer.pro -spec linux-clang CONFIG+=debug CONFIG+=qml_debug
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf:
@@ -270,6 +275,7 @@ Makefile: ../../Planer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/qma
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri:
+/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_charts.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_core.pri:
@@ -338,6 +344,7 @@ Makefile: ../../Planer.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-clang/qma
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf:
 ../../Planer.pro:
+../../resources.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ../../Planer.pro -spec linux-clang CONFIG+=debug CONFIG+=qml_debug
 
@@ -352,6 +359,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents ../../resources.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../categoriesdialog.h ../../contmenu.h ../../database.h ../../databasemanager.h ../../datemanager.h ../../inputdialog.h ../../inputdialogdeadline.h ../../mainwindow.h ../../taskslist.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../../categoriesdialog.cpp ../../contmenu.cpp ../../database.cpp ../../databasemanager.cpp ../../datemanager.cpp ../../inputdialog.cpp ../../inputdialogdeadline.cpp ../../main.cpp ../../mainwindow.cpp ../../taskslist.cpp $(DISTDIR)/
@@ -379,8 +387,21 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_resources.cpp
+qrc_resources.cpp: ../../resources.qrc \
+		/usr/lib/qt5/bin/rcc \
+		../../images\ (1).png \
+		../../images.png \
+		../../question.png \
+		../../lamp.png \
+		../../hospital.png \
+		../../images\ (2).png \
+		../../data/testCalendar.db \
+		../../data/tasks.db
+	/usr/lib/qt5/bin/rcc -name resources ../../resources.qrc -o qrc_resources.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -425,7 +446,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
@@ -494,6 +515,9 @@ taskslist.o: ../../taskslist.cpp ../../taskslist.h \
 		../../databasemanager.h \
 		../../database.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o taskslist.o ../../taskslist.cpp
+
+qrc_resources.o: qrc_resources.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
 
 moc_datemanager.o: moc_datemanager.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_datemanager.o moc_datemanager.cpp

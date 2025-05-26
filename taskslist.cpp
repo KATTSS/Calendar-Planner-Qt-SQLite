@@ -69,17 +69,17 @@ QString TasksList::getItemByCategory(int x)
 {
     switch (x) {
     case 1:
-        return "/home/katya/курсач)/images.png";
+        return ":/images/images.png";
     case 2:
-        return "/home/katya/курсач)/images (1).png";
+        return ":/images/images (1).png";
     case 3:
-        return "/home/katya/курсач)/images (2).png";
+        return ":/images/images (2).png";
     case 4:
-        return "/home/katya/курсач)/lamp.png";
+        return ":/images/lamp.png";
     case 5:
-        return "/home/katya/курсач)/hospital.png";
+        return ":/images/hospital.png";
     default:
-        return "/home/katya/курсач)/question.png";
+        return ":/images/question.png";
     }
 }
 

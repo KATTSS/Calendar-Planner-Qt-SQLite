@@ -31,6 +31,7 @@ public:
     QMap<QDateTime, QString> getTasksByCategory(int cat);
     QDate getOptimalDate(const QDate &deadline);
     void moveDeadlineTasks();
+    bool tableExists(const QString &tableName);
 
     QSqlDatabase database;
 };

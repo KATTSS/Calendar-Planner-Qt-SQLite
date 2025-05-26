@@ -137,13 +137,14 @@ bool Database::addTask(const QDate &date, const QString &time, const QString &de
     QSqlQuery query(database);
    // qDebug() << "in adding tasks to database";
     query.prepare(R"(
-        INSERT INTO tasks (date, time, description, category, is_deadline, deadline)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO tasks (date, time, description, category, is_completed, is_deadline, deadline)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
     )");
     query.addBindValue(date.toString("yyyy-MM-dd"));
     query.addBindValue(time);
     query.addBindValue(description);
     query.addBindValue(category);
+    query.addBindValue(0);
     query.addBindValue(is_deadline? 1 : 0);
     query.addBindValue(deadline.toString("yyyy-MM-dd"));
 
@@ -342,4 +343,11 @@ void Database::moveDeadlineTasks()
         database.rollback();
         qCritical() << "Error moving tasks:" << e.what();
     }
+}
+
+bool Database::tableExists(const QString &tableName) {
+    QSqlQuery query(database);
+    query.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name=?");
+    query.addBindValue(tableName);
+    return query.exec() && query.next();
 }

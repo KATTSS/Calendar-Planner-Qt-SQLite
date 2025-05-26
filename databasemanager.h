@@ -1,6 +1,10 @@
 #ifndef DATABASEMANAGER_H
 #define DATABASEMANAGER_H
 
+#include <QFile>
+#include <QStandardPaths>
+#include <QDir>
+
 #include "database.h"
 
 class DatabaseManager {

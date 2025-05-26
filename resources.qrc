@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>question.png</file>
+        <file>lamp.png</file>
+        <file>images (2).png</file>
+        <file>images (1).png</file>
+        <file>images.png</file>
+        <file>hospital.png</file>
+	 </qresource> 
+    <qresource prefix="/db">
+	<file>data/testCalendar.db</file> 
+        <file>data/tasks.db</file>
+    </qresource>
+</RCC>

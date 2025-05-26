@@ -45,7 +45,7 @@ void InputDialog::on_okButton_clicked()
 
     if(tasksDb->open()) {
        // qDebug() << "database opened";
-        tasksDb->addTask(date, time, task, cat);
+        tasksDb->addTask(date, time, task, cat, false, QDate(0,0,0));
         emit DateManager::instance().newTaskAdded();
     }
     this->close();
