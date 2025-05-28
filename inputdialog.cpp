@@ -37,6 +37,7 @@ void InputDialog::on_okButton_clicked()
 {
     //qDebug() << "in save button";
     QString task = taskInputLine->text();
+    if(task.isEmpty()) { this->close(); return;}
     QString time = getTime();
     int cat = this->getCategoiesComboBox();
     QDate date = DateManager::instance().getSelectedDate();

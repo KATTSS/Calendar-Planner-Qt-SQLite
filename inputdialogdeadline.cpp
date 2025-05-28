@@ -31,6 +31,7 @@ void InputDialogDeadline::on_okButton_clicked()
   //  qDebug() << "ready to place before deadline time(" << getDate() << ")";
     //emit DateManager::instance().newDeadline(getDeadlineDate());
     QString task = taskInputLine->text();
+    if(task.isEmpty()) { this->close(); return;}
     QString time = getTime();
     int cat = this->getCategoiesComboBox();
     QDate deadline = getDeadlineDate();
