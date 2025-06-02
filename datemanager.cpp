@@ -6,9 +6,7 @@ DateManager &DateManager::instance()
     return instance;
 }
 
-DateManager::DateManager() : m_selectedDate(QDate::currentDate())
-{
-}
+DateManager::DateManager() : m_selectedDate(QDate::currentDate()) {}
 
 void DateManager::setSelectedDate(const QDate& date)
 {

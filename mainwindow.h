@@ -38,9 +38,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-   // QHBoxLayout *layout;
     QHBoxLayout *buttonLayout;
-   // QVBoxLayout *calendarLayout;
     QGridLayout *dataLayout;
 
     Database* calendarDb;

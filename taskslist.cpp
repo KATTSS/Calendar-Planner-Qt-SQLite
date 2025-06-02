@@ -11,7 +11,6 @@ void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
 {
     clear();
     QMapIterator<QDateTime, QString> it(toDo);
-   // qDebug() << "size of toDo list: " << toDo.size();
     while (it.hasNext()) {
         it.next();
 
@@ -19,14 +18,12 @@ void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
         int cat, isComp=0,isDeadline, taskId;
 
         QStringList task=it.value().split("|");
-      //  qDebug () << "size of task for list: " << task.size();
         if (task.size()>=5) {
             taskText=task[0];
             cat=task[1].toInt();
             isComp=task[2].toInt();
             isDeadline=task[3].toInt();
             taskId=task[4].toInt();
-           // qDebug () << "oook";
         } else {continue;}
         QString itemText;
         if (writeDate==true) {
@@ -43,8 +40,6 @@ void TasksList::updateTasks(QMap<QDateTime, QString> toDo)
                                .arg(it.key().toString("HH:mm"))
                                .arg(taskText);
         }
-
-     //   qDebug() << "itemText: " << itemText;
 
         QListWidgetItem* item = new QListWidgetItem(itemText, this);
         item->setData(Qt::UserRole, taskId);
@@ -98,7 +93,6 @@ void TasksList::handleItemChange(QListWidgetItem *item)
 {
     int taskId = item->data(Qt::UserRole).toInt();
     bool completed = (item->checkState() == Qt::Checked);
-  //  qDebug () << "in changing status" << taskId << " " << completed;
     tasksDb->updateTaskStatus(taskId, completed);
 }
 

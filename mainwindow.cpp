@@ -7,8 +7,6 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    //setWindowFlags(Qt::FramelessWindowHint);
     this->setWindowTitle("MyPL");
 
     QWidget *centralWidget = new QWidget(this);
@@ -79,9 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
     }, Qt::QueuedConnection);
 
     connect(&DateManager::instance(), &DateManager::categorySelected, this, [this](int id) {
-       // qDebug() << "there will be updation ot categorised tasks";
         QMap<QDateTime, QString> tasks = tasksDb->getTasksByCategory(id);
-       qDebug() << "size of tasks by category " << id << " " << tasks.size();
         list->setWriteDateTrue();
         list->updateTasks(tasks);
     });
@@ -166,7 +162,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_previousMonth_clicked()
 {
-    //qDebug () << "on previous clicked";
     currentMonth= currentMonth.addMonths(-1);
     updateCalendar();
     updateMonthAndYearLineEdit(getDateMonthYear(currentMonth));
@@ -199,9 +194,6 @@ void MainWindow::updateAll()
 
 void MainWindow::updateCalendar()
 {
-
-   // if (!m_updateMutex.tryLock()) return;
-
     QScrollBar *vScroll = calendar->verticalScrollBar();
     QScrollBar *hScroll = calendar->horizontalScrollBar();
     int vValue = vScroll->value();
@@ -254,7 +246,6 @@ void MainWindow::updateCalendar()
 
 void MainWindow::updateTasksList(QDate date)
 {
-   // qDebug() << "Updating tasks for:" << date;
     QMap<QDateTime, QString> tasks = tasksDb->getTasksAtDate(date);
     list->updateTasks(tasks);
 }
@@ -263,10 +254,8 @@ QDate MainWindow::getSelectedDate()
 {
     auto items = calendar->selectedItems();
     if (items.isEmpty()) return QDate();
-
     bool ok;
     int day = items.first()->text().toInt(&ok);
-    //QDate mandy = getMnthAndYearFromLineEdit();
     return ok ? QDate(currentMonth.year(), currentMonth.month(), day) : QDate();
 }
 

@@ -23,7 +23,7 @@ DatabaseManager &DatabaseManager::instance()
     m_tasksDatabase = new Database(tasksDbPath, "tasks_connection");
 
     if (!m_calendarDatabase->open() || !m_tasksDatabase->open()) {
-        qCritical() << "Ошибка открытия баз данных!";
+        qCritical() << "Failed to open database!";
         return;
     }
 
@@ -32,6 +32,7 @@ DatabaseManager &DatabaseManager::instance()
     }
 
     if (!m_tasksDatabase->tableExists("tasks")) {
+
         m_tasksDatabase->createTable("tasks",
                                 "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                                 "date TEXT NOT NULL, "

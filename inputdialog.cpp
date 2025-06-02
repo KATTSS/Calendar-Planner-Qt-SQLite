@@ -25,7 +25,6 @@ InputDialog::InputDialog(QWidget *parent) : CategoriesDialog(parent) {
     timeLayout->addWidget(hours);
     timeLayout->addWidget(minutes);
 
-    // Добавляем новые элементы перед кнопкой OK из базового класса
     mainLayout->insertWidget(0, label);
     mainLayout->insertLayout(1, timeLayout);
     mainLayout->insertWidget(2, taskInputLine);
@@ -35,22 +34,17 @@ InputDialog::InputDialog(QWidget *parent) : CategoriesDialog(parent) {
 
 void InputDialog::on_okButton_clicked()
 {
-    //qDebug() << "in save button";
     QString task = taskInputLine->text();
     if(task.isEmpty()) { this->close(); return;}
     QString time = getTime();
     int cat = this->getCategoiesComboBox();
     QDate date = DateManager::instance().getSelectedDate();
 
-   // qDebug() << "Date:" << date << "Time:" << time << "Task:" << task << "Category:" << cat;
-
     if(tasksDb->open()) {
-       // qDebug() << "database opened";
         tasksDb->addTask(date, time, task, cat, false, QDate(0,0,0));
         emit DateManager::instance().newTaskAdded();
     }
     this->close();
-   // qDebug() << "saving was done";
 }
 
 QString InputDialog::getTime()

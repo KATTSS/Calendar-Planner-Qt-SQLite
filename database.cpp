@@ -77,11 +77,10 @@ QSqlTableModel *Database::createTableModel(const QString &tableName, QObject *pa
 bool Database::createCalendar() {
 
     createTable("calendar", "d TEXT UNIQUE NOT NULL,"
-                           // "dayofweek INT NOT NULL,"
-           // "weekday TEXT NOT NULL,"
-            "year INT NOT NULL,"
-            "month INT NOT NULL,"
-                            "day INT NOT NULL");
+                            "year INT NOT NULL,"
+                            "month INT NOT NULL,"
+                            "day INT NOT NULL"
+                );
 
 
     QSqlQuery query(database);
@@ -95,13 +94,10 @@ bool Database::createCalendar() {
             VALUES (?, ?, ?, ?)
         )");
         query.addBindValue(date.toString("yyyy-MM-dd"));
-        //query.addBindValue((date.dayOfWeek() + 5) % 7);
-        //query.addBindValue(QLocale::system().dayName(date.dayOfWeek(), QLocale::LongFormat));
         query.addBindValue(date.year());
         query.addBindValue(date.month());
         query.addBindValue(date.day());
         if (!query.exec()) {
-            //qWarning() << "Insert error:" << query.lastError().text();
             query.exec("ROLLBACK");
             return false;
         }
@@ -135,7 +131,6 @@ QVector<QDate> Database::getDatesForMonth(int year, int month) {
 bool Database::addTask(const QDate &date, const QString &time, const QString &description, int category, bool is_deadline,  const QDate &deadline)
 {
     QSqlQuery query(database);
-   // qDebug() << "in adding tasks to database";
     query.prepare(R"(
         INSERT INTO tasks (date, time, description, category, is_completed, is_deadline, deadline)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -148,20 +143,16 @@ bool Database::addTask(const QDate &date, const QString &time, const QString &de
     query.addBindValue(is_deadline? 1 : 0);
     query.addBindValue(deadline.toString("yyyy-MM-dd"));
 
-    qDebug() << "in tasks adding, " << date << " " << time << " " << description << " " << is_deadline << " " << deadline;
-
     if (!query.exec()) {
-        qWarning() << "Ошибка добавления задачи:" << query.lastError().text();
+        qWarning() << "Failed to add task:" << query.lastError().text();
         return false;
     }
-   // qDebug() << "tasks added succesfully";
     return true;
 }
 
 
 QMap<QDateTime, QString> Database::getTasksAtDate(QDate &date)
 {
-  //  qDebug() << "before getting tasks";
     QMap<QDateTime, QString> toDo;
     QSqlQuery taskQuery(this->database);
     taskQuery.prepare("SELECT description, time, category, is_completed, deadline, id FROM tasks WHERE date = ?");
@@ -169,8 +160,8 @@ QMap<QDateTime, QString> Database::getTasksAtDate(QDate &date)
     if (taskQuery.exec()) {
         while (taskQuery.next()) {
             QString description = taskQuery.value("description").toString()+"|"+taskQuery.value("category").toString()
-                                  +"|"+taskQuery.value("is_completed").toString()+"|"+taskQuery.value("deadline").toString()+"|"+taskQuery.value("id").toString();
-            //qDebug() << "decsription in getting tasks at date: " << description;
+                                  +"|"+taskQuery.value("is_completed").toString()+"|"+taskQuery.value("deadline").toString()
+                                  +"|"+taskQuery.value("id").toString();
             QString timeStr = taskQuery.value("time").toString();
 
             QDateTime time = QDateTime::fromString(timeStr, "HH:mm");
@@ -182,13 +173,11 @@ QMap<QDateTime, QString> Database::getTasksAtDate(QDate &date)
             }
         }
     }
-   // qDebug() << "Найдено задач for a date: " << toDo.size();
     return toDo;
 }
 
 bool Database::updateTaskStatus(int taskId, bool completed)
 {
-   // qDebug() << "in updating changes";
     QSqlQuery query(database);
     query.prepare("UPDATE tasks SET is_completed = ? WHERE id = ?");
     query.addBindValue(completed ? 1 : 0);
@@ -198,7 +187,6 @@ bool Database::updateTaskStatus(int taskId, bool completed)
 
 bool Database::deleteTask(int taskId)
 {
-    //qDebug() << "in deleting from db";
     QSqlQuery query(database);
     query.prepare("DELETE FROM tasks WHERE id = ?");
     query.addBindValue(taskId);
@@ -209,24 +197,18 @@ QMap<QDateTime, QString> Database::getTasksByCategory(int cat)
 {
     QMap<QDateTime, QString> toDo;
 
-    //qDebug () << "in getbycategory database";
-
     QSqlQuery taskQuery(this->database);
     taskQuery.prepare("SELECT description, is_completed, id, date, time, is_deadline FROM tasks WHERE category = ?");
     taskQuery.addBindValue(cat);
-
-    //qDebug () << "after selection";
-
 
     if (taskQuery.exec()) {
         while (taskQuery.next()) {
             QString description = taskQuery.value("description").toString()+"|"+QString::number(cat)
             +"|"+taskQuery.value("is_completed").toString()+"|"+taskQuery.value("is_deadline").toString()+"|"+taskQuery.value("id").toString();
-            // qDebug() << "decsription: " << description;
+
             QString timeStr = taskQuery.value("date").toString()+taskQuery.value("time").toString();
 
             QDateTime dateTime = QDateTime::fromString(timeStr, "yyyy-MM-ddHH:mm");
-            // qDebug() << "date and time for task from db: " << dateTime;
 
             if (dateTime.isValid()) {
                 toDo.insert(dateTime, description);
@@ -236,8 +218,6 @@ QMap<QDateTime, QString> Database::getTasksByCategory(int cat)
             }
         }
     }
-
-   // qDebug() << "Найдено задач:" << toDo.size();
     return toDo;
 }
 QDate Database::getOptimalDate(const QDate &deadline) {
@@ -250,7 +230,6 @@ QDate Database::getOptimalDate(const QDate &deadline) {
     QDate bestDate = tomorrow;
     int minTaskCount = INT_MAX;
 
-   // qDebug() << "deadline :       " << deadline << "      tomorrow:        " << tomorrow;
     QDate dead = deadline.addDays(-1);
     QSqlQuery query(database);
     query.prepare("SELECT date, COUNT(*) as task_count FROM tasks "
@@ -258,10 +237,6 @@ QDate Database::getOptimalDate(const QDate &deadline) {
                   "GROUP BY date");
     query.addBindValue(tomorrow.toString("yyyy-MM-dd"));
     query.addBindValue(dead.toString("yyyy-MM-dd"));
-
-
-    //qDebug() << "deadline after -1 :       " << dead << "      tomorrow:        " << tomorrow;
-
 
     if (!query.exec()) {
         qWarning() << "Query error:" << query.lastError().text();
@@ -273,7 +248,6 @@ QDate Database::getOptimalDate(const QDate &deadline) {
         QDate date = QDate::fromString(query.value(0).toString(), "yyyy-MM-dd");
         int count = query.value(1).toInt();
         dateTaskCounts[date] = count;
-        //qDebug() << dateTaskCounts[date] << " 1111";
     }
 
     for (QDate date = tomorrow; date <= dead; date = date.addDays(1)) {
@@ -283,7 +257,6 @@ QDate Database::getOptimalDate(const QDate &deadline) {
             bestDate = date;
         }
     }
-    //qDebug() << "Оптимальная дата:" << bestDate << "(задач:" << minTaskCount << ")" << minTaskCount;
     return bestDate;
 }
 

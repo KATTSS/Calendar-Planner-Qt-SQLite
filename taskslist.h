@@ -1,7 +1,6 @@
 #ifndef TASKSLIST_H
 #define TASKSLIST_H
 #include <QListWidget>
-//#include <QTimer>
 #include <QKeyEvent>
 
 
